@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/fondo_pantalla_inicio"
+        android:layout_width="413dp"
+        android:layout_height="736dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/fondo_pantalla_carga_sin_opacar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/fondoblanco"
+        android:layout_width="130dp"
+        android:layout_height="39dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="16dp"
+        android:alpha="0.5"
+        android:background="#00FFFFFF"
+        android:src="@drawable/fondo_blanco"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imagen_pantalla_inicio1"
+        android:layout_width="239dp"
+        android:layout_height="425dp"
+        android:layout_marginTop="84dp"
+        android:layout_marginEnd="172dp"
+        android:src="@drawable/imagen_pantalla_inicio1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imagen_pantalla_inicio2"
+        android:layout_width="245dp"
+        android:layout_height="350dp"
+        android:layout_marginStart="172dp"
+        android:layout_marginTop="72dp"
+        android:src="@drawable/imagen_pantalla_inicio2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Titulo_Principal" />
+
+    <TextView
+        android:id="@+id/usuario_actual"
+        android:layout_width="178dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="64dp"
+        android:fontFamily="@font/boba_cups"
+        android:text="Usuario Actual:"
+        android:textColor="#F2FF9800"
+        android:textSize="22dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/Titulo_Principal"
+        android:layout_width="398dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/boba_cups"
+        android:text="- ¡Hola! Me alegro de que estés aquí."
+        android:textColor="#F2FF9800"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imagen_ajustes"
+        android:layout_width="116dp"
+        android:layout_height="89dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="624dp"
+        android:clickable="true"
+        android:onClick="abrirImagenAjustes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/imagen_ajustes" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/imagen_comenzar"
+        android:layout_width="181dp"
+        android:layout_height="224dp"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="416dp"
+        android:onClick="Ir_A_Minijuegos"
+        app:circularflow_viewCenter="@raw/clip_e_animation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/qeqeq"
+        app:lottie_speed="1.0"
+        app:srcCompat="@drawable/imagen_comenzar" />
+
+    <ImageView
+        android:id="@+id/imagen_nuevo_jugador"
+        android:layout_width="168dp"
+        android:layout_height="69dp"
+        android:layout_marginStart="192dp"
+        android:layout_marginTop="84dp"
+        android:src="@drawable/imagen_nuevo_jugador"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imagen_pantalla_inicio2" />
+
+    <Button
+        android:id="@+id/btn_gestionar_jugadores"
+        android:layout_width="118dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="224dp"
+        android:layout_marginTop="644dp"
+        android:background="@drawable/imagen_boton_naranja"
+        android:clickable="true"
+        android:fontFamily="@font/boba_cups"
+        android:onClick="Ir_A_Gestion_Jugadores"
+        android:text="Gestionar Jugadores"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/usuario_actual2"
+        android:layout_width="96dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="220dp"
+        android:layout_marginTop="60dp"
+        android:fontFamily="@font/boba_cups"
+        android:text=""
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/usuario_actual_icono"
+        android:layout_width="37dp"
+        android:layout_height="38dp"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="628dp"
+        app:circularflow_viewCenter="@raw/clip_e_animation"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/usuario_actual_icono"
+        app:lottie_speed="3.0" />
+
+    <ImageView
+        android:id="@+id/medalla1"
+        android:layout_width="66dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="84dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/medalla1" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

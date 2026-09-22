@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/fondo_panel_minijuegos">
+
+    <ImageView
+        android:id="@+id/imagen_flecha_panel_minijuegos2"
+        android:layout_width="168dp"
+        android:layout_height="69dp"
+        android:layout_marginTop="88dp"
+        android:layout_marginEnd="4dp"
+        android:rotation="180"
+        android:src="@drawable/imagen_flecha_panel_minijuegos"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/Panel_de_Minijuegos"
+        android:layout_width="279dp"
+        android:layout_height="115dp"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/boba_cups"
+        android:text="PANEL DE MINIJUEGOS"
+        android:textColor="#F2FF9800"
+        android:textSize="23sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <Button
+        android:id="@+id/btn_adivina_la_palabra"
+        android:layout_width="142dp"
+        android:layout_height="62dp"
+        android:background="@drawable/imagen_boton_naranja"
+        android:text="Adivina la palabra"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.925"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.674" />
+
+    <ImageView
+        android:id="@+id/imagen_lapiz_panel_minijuegos"
+        android:layout_width="314dp"
+        android:layout_height="143dp"
+        android:layout_marginEnd="4dp"
+        android:onClick="onImageViewClicked"
+        android:src="@drawable/imagen_lapiz_panel_minijuegos"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.872" />
+
+    <TextView
+        android:id="@+id/lenguaje"
+        android:layout_width="113dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="56dp"
+        android:layout_marginEnd="24dp"
+        android:fontFamily="@font/boba_cups"
+        android:text="Lenguaje"
+        android:textColor="#F2FF9800"
+        android:textSize="23dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/memoria"
+        android:layout_width="113dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="136dp"
+        android:fontFamily="@font/boba_cups"
+        android:text="Memoria"
+        android:textColor="#F2FF9800"
+        android:textSize="23dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_identifica"
+        android:layout_width="149dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="156dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/imagen_boton_naranja"
+        android:text="Identifica"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_palabras_encadenadas"
+        android:layout_width="149dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="196dp"
+        android:layout_marginTop="344dp"
+        android:background="@drawable/imagen_boton_naranja"
+        android:text="Palabras Encadenadas"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <Button
+        android:id="@+id/btn_memo"
+        android:layout_width="149dp"
+        android:layout_height="58dp"
+        android:background="@drawable/imagen_boton_naranja"
+        android:text="Memo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.061"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.352" />
+
+    <Button
+        android:id="@+id/btn_frases_vof"
+        android:layout_width="149dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="196dp"
+        android:layout_marginTop="236dp"
+        android:background="@drawable/imagen_boton_naranja"
+        android:text="Frases V o F"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_recuerda"
+        android:layout_width="153dp"
+        android:layout_height="62dp"
+        android:background="@drawable/imagen_boton_naranja"
+        android:text="Recuerda"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.062"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.674" />
+
+    <Button
+        android:id="@+id/btn_juego_de_patrones"
+        android:layout_width="149dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="344dp"
+        android:background="@drawable/imagen_boton_naranja"
+        android:text="Patrones"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imagen_flecha_panel_minijuegos"
+        android:layout_width="168dp"
+        android:layout_height="69dp"
+        android:layout_marginTop="168dp"
+        android:layout_marginEnd="212dp"
+        android:rotation="180"
+        android:src="@drawable/imagen_flecha_panel_minijuegos"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/regresar_inicio"
+        android:layout_width="253dp"
+        android:layout_height="138dp"
+        android:layout_centerInParent="true"
+        android:layout_marginEnd="188dp"
+        android:layout_marginBottom="560dp"
+        android:rotation="90"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/flecha_naranja_retroceso"
+        app:lottie_speed="0.4" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FrasesVoF_8nivel">
+
+
+    <ImageView
+        android:id="@+id/backgroundfrasesvof"
+        android:layout_width="414dp"
+        android:layout_height="736dp"
+        android:background="@drawable/fondo_pantalla_carga"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/fondo_pantalla_carga" />
+
+    <TextView
+        android:id="@+id/textView_level8"
+        android:layout_width="69dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="129dp"
+        android:layout_marginTop="49dp"
+        android:background="@drawable/imagen_boton_naranja"
+        android:text="Nivel8"
+        android:textSize="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/kids_8"
+        android:layout_width="843dp"
+        android:layout_height="248dp"
+        android:layout_marginTop="104dp"
+        android:layout_marginEnd="56dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.442"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/kids_8" />
+
+    <TextView
+        android:id="@+id/titulo_frasesvof"
+        android:layout_width="367dp"
+        android:layout_height="33dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/boba_cups"
+        android:text="Frases Verdaderas o Falsas"
+        android:textColor="#F2FF9800"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/pregunta1_frasesvof"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="364dp"
+        android:fontFamily="@font/boba_cups"
+        android:text="Hay 2 niños sentados en la mesa."
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/pregunta2_frasesvof"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="528dp"
+        android:fontFamily="@font/boba_cups"
+        android:text="Se observan 4 pizarras en la imagen."
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup1"
+        android:layout_width="199dp"
+        android:layout_height="105dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="434dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:id="@+id/radio1_frasev"
+            android:layout_width="match_parent"
+            android:layout_height="57dp"
+            android:layout_marginEnd="16dp"
+            android:buttonTint="#FF5722"
+            android:checked="false"
+            android:text="Verdadero"
+            android:textColor="#F2FF9800"
+            android:textColorHighlight="@color/button_text_color"
+            android:textColorLink="@color/button_text_color"
+            android:textSize="25dp" />
+
+        <RadioButton
+            android:id="@+id/radio2_frasef"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="#FF5722"
+            android:checked="false"
+            android:text="Falso"
+            android:textColor="#F2FF9800"
+            android:textSize="25dp" />
+
+    </RadioGroup>
+
+    <RadioGroup
+        android:layout_width="219dp"
+        android:layout_height="94dp"
+        android:layout_marginTop="606dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:id="@+id/radio3_frasev"
+            android:layout_width="300dp"
+            android:layout_height="52dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:buttonTint="#FF5722"
+            android:text="Verdadero"
+            android:textColor="#F2FF9800"
+            android:textSize="25dp"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <RadioButton
+            android:id="@+id/radio4_frasef"
+            android:layout_width="389dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:buttonTint="#FF5722"
+            android:text="Falso"
+            android:textColor="#F2FF9800"
+            android:textSize="25dp"
+            app:layout_constraintStart_toStartOf="parent" />
+    </RadioGroup>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/trofeo_puntuacion"
+        android:layout_width="115dp"
+        android:layout_height="54dp"
+        android:layout_centerInParent="true"
+        android:layout_marginEnd="64dp"
+        android:layout_marginBottom="628dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/trofeo_puntuacion"
+        app:lottie_speed="0.3" />
+
+    <ImageButton
+        android:id="@+id/fondoblanco2"
+        android:layout_width="66dp"
+        android:layout_height="36dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="24dp"
+        android:alpha="0.5"
+        android:background="#00FFFFFF"
+        android:src="@drawable/fondo_blanco"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/puntuaje_frasesvof8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="276dp"
+        android:layout_marginTop="56dp"
+        android:fontFamily="@font/boba_cups"
+        android:text="0"
+        android:textColor="@color/black"
+        android:textSize="25dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/regresarANiveles8"
+        android:layout_width="253dp"
+        android:layout_height="138dp"
+        android:layout_centerInParent="true"
+        android:layout_marginEnd="200dp"
+        android:layout_marginBottom="588dp"
+        android:rotation="90"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/flecha_naranja_retroceso"
+        app:lottie_speed="0.4" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/imagenCheck"
+        android:layout_width="205dp"
+        android:layout_height="109dp"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="232dp"
+        android:layout_marginTop="600dp"
+        android:rotation="360"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/animacionpalomita"
+        app:lottie_speed="0.2" />
+
+    <Button
+        android:id="@+id/verificar8activity_vof"
+        android:layout_width="99dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="232dp"
+        android:layout_marginTop="652dp"
+        android:background="@drawable/imagen_boton_naranja"
+        android:text="Verificar Respuestas"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

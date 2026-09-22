@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/icon_neurojuegos"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/icon_neurojuegos_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".VictoriaRecuerda"
+            android:exported="false" />
+        <activity
+            android:name=".Recuerda16"
+            android:exported="false" />
+        <activity
+            android:name=".Recuerda15"
+            android:exported="false" />
+        <activity
+            android:name=".Recuerda14"
+            android:exported="false" />
+        <activity
+            android:name=".Recuerda13"
+            android:exported="false" />
+        <activity
+            android:name=".Recuerda12"
+            android:exported="false" />
+        <activity
+            android:name=".Recuerda11"
+            android:exported="false" />
+        <activity
+            android:name=".Recuerda10"
+            android:exported="false" />
+        <activity
+            android:name=".Recuerda9"
+            android:exported="false" />
+        <activity
+            android:name=".Recuerda8"
+            android:exported="false" />
+        <activity
+            android:name=".Recuerda7"
+            android:exported="false" />
+        <activity
+            android:name=".Recuerda6"
+            android:exported="false" />
+        <activity
+            android:name=".Recuerda5"
+            android:exported="false" />
+        <activity
+            android:name=".Recuerda4"
+            android:exported="false" />
+        <activity
+            android:name=".Recuerda3"
+            android:exported="false" />
+        <activity
+            android:name=".Recuerda2"
+            android:exported="false" />
+        <activity
+            android:name=".niveles_recuerda"
+            android:exported="false" />
+        <activity
+            android:name=".Recuerda1"
+            android:exported="false" />
+        <activity
+            android:name=".VictoriaAdivinaLaPalabra"
+            android:exported="false" />
+        <activity
+            android:name=".Gestion_Jugadores"
+            android:exported="false" />
+        <activity
+            android:name=".AdivinaLaPalabra16"
+            android:exported="false" />
+        <activity
+            android:name=".AdivinaLaPalabra15"
+            android:exported="false" />
+        <activity
+            android:name=".AdivinaLaPalabra14"
+            android:exported="false" />
+        <activity
+            android:name=".AdivinaLaPalabra13"
+            android:exported="false" />
+        <activity
+            android:name=".AdivinaLaPalabra12"
+            android:exported="false" />
+        <activity
+            android:name=".AdivinaLaPalabra11"
+            android:exported="false" />
+        <activity
+            android:name=".AdivinaLaPalabra10"
+            android:exported="false" />
+        <activity
+            android:name=".AdivinaLaPalabra9"
+            android:exported="false" />
+        <activity
+            android:name=".AdivinaLaPalabra8"
+            android:exported="false" />
+        <activity
+            android:name=".AdivinaLaPalabra7"
+            android:exported="false" />
+        <activity
+            android:name=".AdivinaLaPalabra6"
+            android:exported="false" />
+        <activity
+            android:name=".AdivinaLaPalabra5"
+            android:exported="false" />
+        <activity
+            android:name=".AdivinaLaPalabra4"
+            android:exported="false" />
+        <activity
+            android:name=".AdivinaLaPalabra3"
+            android:exported="false" />
+        <activity
+            android:name=".AdivinaLaPalabra2"
+            android:exported="false" />
+        <activity
+            android:name=".niveles_adivina_la_palabra"
+            android:exported="false" />
+        <activity
+            android:name=".AdivinaLaPalabra1"
+            android:exported="false" />
+        <activity
+            android:name=".Patrones23"
+            android:exported="false" />
+        <activity
+            android:name=".Patrones22"
+            android:exported="false" />
+        <activity
+            android:name=".Patrones21"
+            android:exported="false" />
+        <activity
+            android:name=".Patrones20"
+            android:exported="false" />
+        <activity
+            android:name=".Patrones19"
+            android:exported="false" />
+        <activity
+            android:name=".Patrones18"
+            android:exported="false" />
+        <activity
+            android:name=".Patrones17"
+            android:exported="false" />
+        <activity
+            android:name=".Patrones16"
+            android:exported="false" />
+        <activity
+            android:name=".Patrones15"
+            android:exported="false" />
+        <activity
+            android:name=".Patrones14"
+            android:exported="false" />
+        <activity
+            android:name=".Patrones13"
+            android:exported="false" />
+        <activity
+            android:name=".Patrones12"
+            android:exported="false" />
+        <activity
+            android:name=".Patrones11"
+            android:exported="false" />
+        <activity
+            android:name=".Patrones10"
+            android:exported="false" />
+        <activity
+            android:name=".Patrones9"
+            android:exported="false" />
+        <activity
+            android:name=".Patrones8"
+            android:exported="false" />
+        <activity
+            android:name=".Patrones7"
+            android:exported="false" />
+        <activity
+            android:name=".Patrones6"
+            android:exported="false" />
+        <activity
+            android:name=".Patrones5"
+            android:exported="false" />
+        <activity
+            android:name=".Patrones4"
+            android:exported="false" />
+        <activity
+            android:name=".Patrones3"
+            android:exported="false" />
+        <activity
+            android:name=".Patrones2"
+            android:exported="false" />
+        <activity
+            android:name=".niveles_patrones"
+            android:exported="false" />
+        <activity
+            android:name=".VictoriaPatrones"
+            android:exported="false" />
+        <activity
+            android:name=".Patrones1"
+            android:exported="false" />
+        <activity
+            android:name=".VictoriaIdentifica"
+            android:exported="false" />
+        <activity
+            android:name=".Identifica16"
+            android:exported="false" />
+        <activity
+            android:name=".Identifica15"
+            android:exported="false" />
+        <activity
+            android:name=".Identifica14"
+            android:exported="false" />
+        <activity
+            android:name=".Identifica13"
+            android:exported="false" />
+        <activity
+            android:name=".Identifica12"
+            android:exported="false" />
+        <activity
+            android:name=".Identifica11"
+            android:exported="false" />
+        <activity
+            android:name=".Identifica10"
+            android:exported="false" />
+        <activity
+            android:name=".Identifica9"
+            android:exported="false" />
+        <activity
+            android:name=".Identifica8"
+            android:exported="false" />
+        <activity
+            android:name=".Identifica7"
+            android:exported="false" />
+        <activity
+            android:name=".Identifica6"
+            android:exported="false" />
+        <activity
+            android:name=".Identifica5"
+            android:exported="false" />
+        <activity
+            android:name=".Identifica4"
+            android:exported="false" />
+        <activity
+            android:name=".Identifica3"
+            android:exported="false" />
+        <activity
+            android:name=".Identifica2"
+            android:exported="false" />
+        <activity
+            android:name=".niveles_identifica"
+            android:exported="false" />
+        <activity
+            android:name=".Identifica1"
+            android:exported="false" />
+        <activity
+            android:name=".FrasesVoF_16nivel"
+            android:exported="false" />
+        <activity
+            android:name=".FrasesVoF_15nivel"
+            android:exported="false" />
+        <activity
+            android:name=".FrasesVoF_14nivel"
+            android:exported="false" />
+        <activity
+            android:name=".FrasesVoF_13nivel"
+            android:exported="false" />
+        <activity
+            android:name=".FrasesVoF_12nivel"
+            android:exported="false" />
+        <activity
+            android:name=".FrasesVoF_11nivel"
+            android:exported="false" />
+        <activity
+            android:name=".FrasesVoF_10nivel"
+            android:exported="false" />
+        <activity
+            android:name=".FrasesVoF_9nivel"
+            android:exported="false" />
+        <activity
+            android:name=".FrasesVoF_8nivel"
+            android:exported="false" />
+        <activity
+            android:name=".FrasesVoF_7nivel"
+            android:exported="false" />
+        <activity
+            android:name=".FrasesVoF_6nivel"
+            android:exported="false" />
+        <activity
+            android:name=".FrasesVoF_5nivel"
+            android:exported="false" />
+        <activity
+            android:name=".FrasesVoF_4nivel"
+            android:exported="false" />
+        <activity
+            android:name=".FrasesVoF_3nivel"
+            android:exported="false" />
+        <activity
+            android:name=".Victoria"
+            android:exported="false" />
+        <activity
+            android:name=".FrasesVoF_2nivel"
+            android:exported="false" />
+        <activity
+            android:name=".niveles_frasesvof"
+            android:exported="false" />
+        <activity
+            android:name=".FrasesVoF_1nivel"
+            android:exported="false" />
+        <activity
+            android:name=".Pantalla_De_Carga"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="fullSensor"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.app.default_dialog_theme"
+                android:resource="@style/Theme.AppCompat.Light.Dialog" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Panel_Minijuegos"
+            android:exported="false" />
+        <activity
+            android:name=".AjustesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Inicio_Activity"
+            android:exported="true" />
+    </application>
+
+</manifest>

@@ -1,0 +1,13 @@
+# Root gitignore — APK DE TESIS, NEUROJUEGOS
+.idea/
+*.iml
+local.properties
+*.keystore
+*.jks
+build/
+.gradle/
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab

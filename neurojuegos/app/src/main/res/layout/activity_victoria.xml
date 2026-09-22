@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".VictoriaFrasesVoF">
+
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="411dp"
+        android:layout_height="733dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/fondo_victoria" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/fiesta1"
+        android:layout_width="318dp"
+        android:layout_height="317dp"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        app:circularflow_viewCenter="@raw/clip_e_animation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/fiesta1"
+        app:lottie_speed="1.0" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/fiesta2"
+        android:layout_width="124dp"
+        android:layout_height="134dp"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="440dp"
+        android:layout_marginEnd="104dp"
+        app:circularflow_viewCenter="@raw/clip_e_animation"
+        app:layout_constraintEnd_toStartOf="@+id/fiesta2_copia"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/fiesta2"
+        app:lottie_speed="1.0" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/fiesta2_copia"
+        android:layout_width="132dp"
+        android:layout_height="126dp"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="263dp"
+        android:layout_marginTop="440dp"
+        android:layout_marginEnd="16dp"
+        app:circularflow_viewCenter="@raw/clip_e_animation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/fiesta2"
+        app:lottie_speed="1.0" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/fiesta3"
+        android:layout_width="226dp"
+        android:layout_height="146dp"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="184dp"
+        android:layout_marginTop="44dp"
+        app:circularflow_viewCenter="@raw/clip_e_animation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/fiesta3"
+        app:lottie_speed="1.0" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/fiesta3_copia"
+        android:layout_width="226dp"
+        android:layout_height="146dp"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="184dp"
+        app:circularflow_viewCenter="@raw/clip_e_animation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/fiesta3"
+        app:lottie_speed="1.0" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="368dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/boba_cups"
+        android:text="NIVEL SUPERADO!!"
+        android:textColor="#FFEB3B"
+        android:textSize="33dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_sgte_level"
+        android:layout_width="96dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="272dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/imagen_boton_naranja"
+        android:fontFamily="@font/boba_cups"
+        android:text="Siguiente Nivel"
+        android:textColor="@color/button_text_color"
+        android:textSize="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/pasar_a_niveles"
+        android:layout_width="96dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="140dp"
+        android:layout_marginTop="632dp"
+        android:background="@drawable/imagen_boton_naranja"
+        android:fontFamily="@font/boba_cups"
+        android:onClick="Todos_Los_Niveles"
+        android:text="Pasar A Niveles"
+        android:textColor="@color/button_text_color"
+        android:textSize="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/repetir_nivel"
+        android:layout_width="96dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="632dp"
+        android:background="@drawable/imagen_boton_naranja"
+        android:fontFamily="@font/boba_cups"
+        android:text="Repetir Nivel"
+        android:textColor="@color/button_text_color"
+        android:textSize="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
