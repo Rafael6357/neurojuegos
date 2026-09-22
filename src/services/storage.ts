@@ -63,7 +63,12 @@ export const getTotalScore = (p: Player): number => {
     (p.puntuacionIdentifica || 0) +
     (p.puntuacionPatrones || 0) +
     (p.puntuacionCadenaNum || 0) +
-    (p.puntuacionMemo || 0)
+    (p.puntuacionMemo || 0) +
+    (p.puntuacionStroop || 0) +
+    (p.puntuacionParejas || 0) +
+    (p.puntuacionOrdenar || 0) +
+    (p.puntuacionIntruso || 0) +
+    (p.puntuacionDigitos || 0)
   );
 };
 
@@ -132,11 +137,21 @@ export const createPlayer = (nombre: string, edad: number): Player => {
     puntuacionPatrones: 0,
     puntuacionCadenaNum: 0,
     puntuacionMemo: 0,
+    puntuacionStroop: 0,
+    puntuacionParejas: 0,
+    puntuacionOrdenar: 0,
+    puntuacionIntruso: 0,
+    puntuacionDigitos: 0,
     nivelFrasesVoF: 1,
     nivelIdentifica: 1,
     nivelPatrones: 1,
     nivelAdivina: 1,
     nivelRecuerda: 1,
+    nivelStroop: 1,
+    nivelParejas: 1,
+    nivelOrdenar: 1,
+    nivelIntruso: 1,
+    nivelDigitos: 1,
     createdAt: Date.now(),
   };
 
@@ -148,7 +163,17 @@ export const createPlayer = (nombre: string, edad: number): Player => {
 
 export const updatePlayerScoreAndLevel = (
   playerId: string,
-  gameKey: 'FrasesVoF' | 'Identifica' | 'Patrones' | 'Adivina' | 'Recuerda',
+  gameKey:
+    | 'FrasesVoF'
+    | 'Identifica'
+    | 'Patrones'
+    | 'Adivina'
+    | 'Recuerda'
+    | 'Stroop'
+    | 'Parejas'
+    | 'Ordenar'
+    | 'Intruso'
+    | 'Digitos',
   pointsEarned: number,
   completedLevel: number
 ): Player | null => {
@@ -181,6 +206,26 @@ export const updatePlayerScoreAndLevel = (
       case 'Recuerda':
         copy.puntuacionMemo = (copy.puntuacionMemo || 0) + pointsEarned;
         copy.nivelRecuerda = Math.max(copy.nivelRecuerda || 1, nextLevel);
+        break;
+      case 'Stroop':
+        copy.puntuacionStroop = (copy.puntuacionStroop || 0) + pointsEarned;
+        copy.nivelStroop = Math.max(copy.nivelStroop || 1, nextLevel);
+        break;
+      case 'Parejas':
+        copy.puntuacionParejas = (copy.puntuacionParejas || 0) + pointsEarned;
+        copy.nivelParejas = Math.max(copy.nivelParejas || 1, nextLevel);
+        break;
+      case 'Ordenar':
+        copy.puntuacionOrdenar = (copy.puntuacionOrdenar || 0) + pointsEarned;
+        copy.nivelOrdenar = Math.max(copy.nivelOrdenar || 1, nextLevel);
+        break;
+      case 'Intruso':
+        copy.puntuacionIntruso = (copy.puntuacionIntruso || 0) + pointsEarned;
+        copy.nivelIntruso = Math.max(copy.nivelIntruso || 1, nextLevel);
+        break;
+      case 'Digitos':
+        copy.puntuacionDigitos = (copy.puntuacionDigitos || 0) + pointsEarned;
+        copy.nivelDigitos = Math.max(copy.nivelDigitos || 1, nextLevel);
         break;
     }
 

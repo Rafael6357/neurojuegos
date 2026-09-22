@@ -58,40 +58,40 @@ export const IdentificaGame: React.FC<IdentificaGameProps> = ({
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] p-4 sm:p-6 bg-gradient-to-b from-sky-50 via-amber-50 to-blue-100">
+    <div className="min-h-[calc(100vh-64px)] p-4 sm:p-6 bg-[#131722] text-slate-100">
       <div className="max-w-3xl mx-auto space-y-5">
         {/* Navigation & Level indicator */}
         <div className="flex items-center justify-between">
           <button
             id="btn_identifica_back_levels"
             onClick={() => { playClick(); onReturnToLevels(); }}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-white hover:bg-sky-50 text-slate-800 font-bold text-sm shadow-sm border border-sky-300 active:scale-95 transition"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#1C212E] hover:bg-[#252B3B] text-slate-200 font-bold text-xs sm:text-sm shadow-xs border border-slate-700 active:scale-95 transition cursor-pointer"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4 text-slate-400" />
             <span>Niveles</span>
           </button>
 
-          <div className="px-4 py-1.5 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 text-white font-black text-sm shadow-sm">
+          <div className="px-3.5 py-1.5 rounded-xl bg-amber-600 text-white font-extrabold text-xs shadow-2xs border border-amber-500">
             Nivel {levelNumber}
           </div>
 
           <button
             id="btn_identifica_reset"
             onClick={handleReset}
-            className="flex items-center gap-1 px-3 py-2 rounded-2xl bg-white hover:bg-sky-50 text-slate-800 font-bold text-xs shadow-sm border border-sky-300 active:scale-95 transition"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#1C212E] hover:bg-[#252B3B] text-slate-200 font-bold text-xs shadow-xs border border-slate-700 active:scale-95 transition cursor-pointer"
             title="Reiniciar selecciones"
           >
-            <RotateCcw className="w-3.5 h-3.5" />
+            <RotateCcw className="w-3.5 h-3.5 text-slate-400" />
             <span className="hidden sm:inline">Reiniciar</span>
           </button>
         </div>
 
         {/* Title & Instructions */}
         <div className="text-center">
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900">
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-100 tracking-tight">
             Identifica
           </h1>
-          <div className="mt-2 inline-block px-4 py-2 rounded-2xl bg-amber-100 border-2 border-amber-300 text-amber-950 font-bold text-xs sm:text-sm">
+          <div className="mt-2 inline-block px-3.5 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 font-bold text-xs sm:text-sm">
             {levelData.taskText}
           </div>
         </div>
@@ -100,10 +100,10 @@ export const IdentificaGame: React.FC<IdentificaGameProps> = ({
         {feedback && (
           <div
             id="identifica_feedback_banner"
-            className={`p-3.5 rounded-2xl text-sm font-bold text-center border-2 transition ${
+            className={`p-3.5 rounded-xl text-xs sm:text-sm font-bold text-center border transition ${
               feedback.success
-                ? 'bg-emerald-100 border-emerald-400 text-emerald-900'
-                : 'bg-rose-100 border-rose-400 text-rose-900'
+                ? 'bg-emerald-950/70 border-emerald-500/50 text-emerald-200'
+                : 'bg-rose-950/70 border-rose-500/50 text-rose-200'
             }`}
           >
             {feedback.text}
@@ -111,7 +111,7 @@ export const IdentificaGame: React.FC<IdentificaGameProps> = ({
         )}
 
         {/* 4 Cards Grid */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4">
           {levelData.items.map((item) => {
             const isChecked = !!checkedItems[item.id];
 
@@ -120,14 +120,14 @@ export const IdentificaGame: React.FC<IdentificaGameProps> = ({
                 key={item.id}
                 id={`identifica_item_${item.id}`}
                 onClick={() => toggleCheck(item.id)}
-                className={`p-4 rounded-3xl border-3 transition-all cursor-pointer select-none flex flex-col items-center justify-between text-center active:scale-95 ${
+                className={`p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl border transition-all cursor-pointer select-none flex flex-col items-center justify-between text-center active:scale-[0.98] ${
                   isChecked
-                    ? 'bg-sky-100/90 border-sky-500 shadow-md ring-2 ring-sky-300'
-                    : 'bg-white border-amber-200 hover:border-sky-300 shadow-sm'
+                    ? 'bg-amber-500/20 border-amber-500 shadow-2xs ring-2 ring-amber-500/40'
+                    : 'bg-[#1C212E] border-slate-700/80 hover:border-slate-600 hover:bg-[#23293A] shadow-xs'
                 }`}
               >
                 {/* Item Image */}
-                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-amber-50/60 p-2 flex items-center justify-center border border-amber-100 mb-3">
+                <div className="w-20 h-20 sm:w-26 sm:h-26 md:w-30 md:h-30 rounded-2xl bg-slate-900 p-2 flex items-center justify-center border border-slate-700 mb-2 sm:mb-3">
                   <img
                     src={item.image}
                     alt={item.label}
@@ -141,11 +141,11 @@ export const IdentificaGame: React.FC<IdentificaGameProps> = ({
                 {/* Checkbox and Label */}
                 <div className="flex items-center gap-2 mt-auto">
                   {isChecked ? (
-                    <CheckSquare className="w-6 h-6 text-sky-600 fill-sky-100" />
+                    <CheckSquare className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-amber-400 fill-amber-950/40 shrink-0" />
                   ) : (
-                    <Square className="w-6 h-6 text-slate-400" />
+                    <Square className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-slate-500 shrink-0" />
                   )}
-                  <span className="text-base sm:text-lg font-black text-slate-800">
+                  <span className="text-sm sm:text-base font-extrabold text-slate-100 leading-tight">
                     {item.label}
                   </span>
                 </div>
@@ -158,7 +158,7 @@ export const IdentificaGame: React.FC<IdentificaGameProps> = ({
         <button
           id="btn_verificar_identifica"
           onClick={handleVerify}
-          className="w-full py-4 px-6 rounded-3xl bg-gradient-to-r from-sky-500 via-blue-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white font-black text-lg shadow-xl active:scale-95 transition border-b-6 border-blue-800"
+          className="w-full py-3 px-6 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-sm sm:text-base shadow-xs active:scale-[0.98] transition cursor-pointer border border-amber-500"
         >
           VERIFICAR RESPUESTAS
         </button>

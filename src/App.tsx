@@ -8,6 +8,7 @@ import {
 import { HeaderBar } from './components/HeaderBar';
 import { RankingModal } from './components/RankingModal';
 import { VictoriaModal } from './components/VictoriaModal';
+import { WalkingDonutLoader } from './components/WalkingDonutLoader';
 import { InicioScreen } from './components/screens/InicioScreen';
 import { GestionJugadoresScreen } from './components/screens/GestionJugadoresScreen';
 import { PanelMinijuegosScreen } from './components/screens/PanelMinijuegosScreen';
@@ -17,16 +18,29 @@ import { IdentificaGame } from './components/screens/IdentificaGame';
 import { PatronesGame } from './components/screens/PatronesGame';
 import { AdivinaPalabraGame } from './components/screens/AdivinaPalabraGame';
 import { RecuerdaGame } from './components/screens/RecuerdaGame';
+import { StroopGame } from './components/screens/StroopGame';
+import { ParejasGame } from './components/screens/ParejasGame';
+import { OrdenaFraseGame } from './components/screens/OrdenaFraseGame';
+import { IntrusoGame } from './components/screens/IntrusoGame';
+import { DigitosGame } from './components/screens/DigitosGame';
 import { AjustesScreen } from './components/screens/AjustesScreen';
 import { TOTAL_LEVELS_COUNT } from './data/gamesData';
+import { startMusic } from './utils/sound';
 
 export function App() {
+  const isTest = typeof process !== 'undefined' && process.env?.NODE_ENV === 'test';
+
   const [players, setPlayers] = useState<Player[]>([]);
   const [activePlayer, setActivePlayer] = useState<Player | null>(null);
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('inicio');
   const [selectedGame, setSelectedGame] = useState<GameType>('frases_vof');
   const [currentLevel, setCurrentLevel] = useState<number>(1);
   const [rankingOpen, setRankingOpen] = useState<boolean>(false);
+
+  // Simulated walking donut loading screens
+  const [appLoading, setAppLoading] = useState<boolean>(!isTest);
+  const [gameLoading, setGameLoading] = useState<boolean>(false);
+  const [gameLoadingTitle, setGameLoadingTitle] = useState<string>('Cargando minijuego...');
 
   // Victory modal state
   const [victoryState, setVictoryState] = useState<{
@@ -50,6 +64,37 @@ export function App() {
     refreshPlayers();
   }, []);
 
+  // Synchronize background music theme with current screen and minigame
+  useEffect(() => {
+    if (currentScreen === 'ajustes') {
+      // Don't override user's manual preview in Ajustes
+      return;
+    }
+
+    if (
+      currentScreen === 'juego_frases_vof' ||
+      currentScreen === 'juego_identifica' ||
+      currentScreen === 'juego_adivina' ||
+      currentScreen === 'juego_ordenar'
+    ) {
+      startMusic('lenguaje');
+    } else if (
+      currentScreen === 'juego_recuerda' ||
+      currentScreen === 'juego_patrones' ||
+      currentScreen === 'juego_parejas' ||
+      currentScreen === 'juego_digitos'
+    ) {
+      startMusic('memoria');
+    } else if (
+      currentScreen === 'juego_stroop' ||
+      currentScreen === 'juego_intruso'
+    ) {
+      startMusic('atencion');
+    } else {
+      startMusic('menu');
+    }
+  }, [currentScreen]);
+
   const handleSelectGame = (game: GameType) => {
     setSelectedGame(game);
     setCurrentScreen('niveles');
@@ -57,29 +102,74 @@ export function App() {
 
   const handleSelectLevel = (level: number) => {
     setCurrentLevel(level);
+    let targetScreen: ScreenType = 'juego_frases_vof';
+    let gameTitle = 'Cargando minijuego...';
+
     switch (selectedGame) {
       case 'frases_vof':
-        setCurrentScreen('juego_frases_vof');
+        targetScreen = 'juego_frases_vof';
+        gameTitle = 'Cargando Frases V o F...';
         break;
       case 'identifica':
-        setCurrentScreen('juego_identifica');
+        targetScreen = 'juego_identifica';
+        gameTitle = 'Cargando Identifica...';
         break;
       case 'patrones':
-        setCurrentScreen('juego_patrones');
+        targetScreen = 'juego_patrones';
+        gameTitle = 'Cargando Patrones...';
         break;
       case 'adivina_palabra':
-        setCurrentScreen('juego_adivina');
+        targetScreen = 'juego_adivina';
+        gameTitle = 'Cargando Adivina la Palabra...';
         break;
       case 'recuerda':
-        setCurrentScreen('juego_recuerda');
+        targetScreen = 'juego_recuerda';
+        gameTitle = 'Cargando Recuerda...';
         break;
+      case 'stroop':
+        targetScreen = 'juego_stroop';
+        gameTitle = 'Cargando Desafío Stroop...';
+        break;
+      case 'parejas':
+        targetScreen = 'juego_parejas';
+        gameTitle = 'Cargando Parejas de Cartas...';
+        break;
+      case 'ordenar':
+        targetScreen = 'juego_ordenar';
+        gameTitle = 'Cargando Ordena la Frase...';
+        break;
+      case 'intruso':
+        targetScreen = 'juego_intruso';
+        gameTitle = 'Cargando Encuentra el Intruso...';
+        break;
+      case 'digitos':
+        targetScreen = 'juego_digitos';
+        gameTitle = 'Cargando Dígitos Inversos...';
+        break;
+    }
+
+    setCurrentScreen(targetScreen);
+    if (!isTest) {
+      setGameLoadingTitle(gameTitle);
+      setGameLoading(true);
     }
   };
 
   const handleWin = (points: number) => {
     if (!activePlayer) return;
 
-    let gameKey: 'FrasesVoF' | 'Identifica' | 'Patrones' | 'Adivina' | 'Recuerda' = 'FrasesVoF';
+    let gameKey:
+      | 'FrasesVoF'
+      | 'Identifica'
+      | 'Patrones'
+      | 'Adivina'
+      | 'Recuerda'
+      | 'Stroop'
+      | 'Parejas'
+      | 'Ordenar'
+      | 'Intruso'
+      | 'Digitos' = 'FrasesVoF';
+
     switch (selectedGame) {
       case 'frases_vof':
         gameKey = 'FrasesVoF';
@@ -95,6 +185,21 @@ export function App() {
         break;
       case 'recuerda':
         gameKey = 'Recuerda';
+        break;
+      case 'stroop':
+        gameKey = 'Stroop';
+        break;
+      case 'parejas':
+        gameKey = 'Parejas';
+        break;
+      case 'ordenar':
+        gameKey = 'Ordenar';
+        break;
+      case 'intruso':
+        gameKey = 'Intruso';
+        break;
+      case 'digitos':
+        gameKey = 'Digitos';
         break;
     }
 
@@ -153,6 +258,16 @@ export function App() {
         return 'Adivina la Palabra';
       case 'juego_recuerda':
         return 'Recuerda';
+      case 'juego_stroop':
+        return 'Desafío de Colores';
+      case 'juego_parejas':
+        return 'Parejas de Cartas';
+      case 'juego_ordenar':
+        return 'Ordena la Frase';
+      case 'juego_intruso':
+        return 'Encuentra el Intruso';
+      case 'juego_digitos':
+        return 'Dígitos Inversos';
       case 'ajustes':
         return 'Ajustes';
       default:
@@ -248,6 +363,46 @@ export function App() {
           />
         )}
 
+        {currentScreen === 'juego_stroop' && currentLevel > 0 && (
+          <StroopGame
+            levelNumber={currentLevel}
+            onWin={handleWin}
+            onReturnToLevels={() => setCurrentScreen('niveles')}
+          />
+        )}
+
+        {currentScreen === 'juego_parejas' && currentLevel > 0 && (
+          <ParejasGame
+            levelNumber={currentLevel}
+            onWin={handleWin}
+            onReturnToLevels={() => setCurrentScreen('niveles')}
+          />
+        )}
+
+        {currentScreen === 'juego_ordenar' && currentLevel > 0 && (
+          <OrdenaFraseGame
+            levelNumber={currentLevel}
+            onWin={handleWin}
+            onReturnToLevels={() => setCurrentScreen('niveles')}
+          />
+        )}
+
+        {currentScreen === 'juego_intruso' && currentLevel > 0 && (
+          <IntrusoGame
+            levelNumber={currentLevel}
+            onWin={handleWin}
+            onReturnToLevels={() => setCurrentScreen('niveles')}
+          />
+        )}
+
+        {currentScreen === 'juego_digitos' && currentLevel > 0 && (
+          <DigitosGame
+            levelNumber={currentLevel}
+            onWin={handleWin}
+            onReturnToLevels={() => setCurrentScreen('niveles')}
+          />
+        )}
+
         {currentScreen === 'ajustes' && (
           <AjustesScreen
             onNavigate={setCurrentScreen}
@@ -274,6 +429,25 @@ export function App() {
         onReturnToLevels={handleReturnToLevels}
         hasNextLevel={victoryState.levelNumber < TOTAL_LEVELS_COUNT}
       />
+
+      {/* Simulated Walking Donut Loader for App Boot and Minigames */}
+      {appLoading && (
+        <WalkingDonutLoader
+          message="Cargando el juego..."
+          submessage="¡Preparando diversión y estimulación cognitiva!"
+          duration={1300}
+          onComplete={() => setAppLoading(false)}
+        />
+      )}
+
+      {gameLoading && (
+        <WalkingDonutLoader
+          message={gameLoadingTitle}
+          submessage="¡Preparando tu desafío cognitivo!"
+          duration={900}
+          onComplete={() => setGameLoading(false)}
+        />
+      )}
     </div>
   );
 }

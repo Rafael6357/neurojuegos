@@ -422,4 +422,351 @@ export const RECUERDA_LEVELS: RecuerdaLevel[] = [
   }
 ];
 
+export interface StroopQuestion {
+  id: string;
+  word: string;        // Text to show, e.g. "ROJO"
+  inkColorName: string;// True color of the font, e.g. "AZUL"
+  inkHex: string;      // Color hex or tailwind class
+  options: { name: string; hex: string; isCorrect: boolean }[];
+}
+
+export interface StroopLevel {
+  level: number;
+  mode: 'color_de_tinta' | 'significado_palabra';
+  instruction: string;
+  questions: StroopQuestion[];
+  points: number;
+}
+
+export interface MemoryCard {
+  id: string;
+  pairId: string;
+  label: string;
+  emoji: string;
+  color: string;
+}
+
+export interface ParejasLevel {
+  level: number;
+  pairsCount: number;
+  cards: { pairId: string; label: string; emoji: string; color: string }[];
+  points: number;
+}
+
+export interface OrdenaFraseLevel {
+  level: number;
+  fullSentence: string;
+  scrambledWords: string[];
+  hint: string;
+  image?: string;
+  points: number;
+}
+
+export interface IntrusoItem {
+  id: string;
+  name: string;
+  emoji: string;
+  isIntruder: boolean;
+}
+
+export interface IntrusoLevel {
+  level: number;
+  categoryRule: string;
+  explanation: string;
+  items: IntrusoItem[];
+  points: number;
+}
+
+export interface DigitosLevel {
+  level: number;
+  sequence: number[]; // e.g. [4, 7, 2]
+  previewSeconds: number;
+  points: number;
+}
+
+export const STROOP_LEVELS: StroopLevel[] = [
+  {
+    level: 1,
+    mode: 'color_de_tinta',
+    instruction: '¡Toca el botón con el COLOR DE LA TINTA con la que está escrita la palabra!',
+    points: 3,
+    questions: [
+      {
+        id: 'q1',
+        word: 'AZUL',
+        inkColorName: 'Rojo',
+        inkHex: '#ef4444',
+        options: [
+          { name: 'Rojo', hex: '#ef4444', isCorrect: true },
+          { name: 'Azul', hex: '#3b82f6', isCorrect: false },
+          { name: 'Verde', hex: '#22c55e', isCorrect: false },
+        ]
+      },
+      {
+        id: 'q2',
+        word: 'VERDE',
+        inkColorName: 'Amarillo',
+        inkHex: '#eab308',
+        options: [
+          { name: 'Verde', hex: '#22c55e', isCorrect: false },
+          { name: 'Amarillo', hex: '#eab308', isCorrect: true },
+          { name: 'Azul', hex: '#3b82f6', isCorrect: false },
+        ]
+      },
+      {
+        id: 'q3',
+        word: 'ROJO',
+        inkColorName: 'Azul',
+        inkHex: '#3b82f6',
+        options: [
+          { name: 'Rojo', hex: '#ef4444', isCorrect: false },
+          { name: 'Azul', hex: '#3b82f6', isCorrect: true },
+          { name: 'Negro', hex: '#1e293b', isCorrect: false },
+        ]
+      }
+    ]
+  },
+  {
+    level: 2,
+    mode: 'color_de_tinta',
+    instruction: '¡Concéntrate! Selecciona el color de la tinta, no lo que lees.',
+    points: 3,
+    questions: [
+      {
+        id: 'q4',
+        word: 'NEGRO',
+        inkColorName: 'Verde',
+        inkHex: '#22c55e',
+        options: [
+          { name: 'Negro', hex: '#1e293b', isCorrect: false },
+          { name: 'Verde', hex: '#22c55e', isCorrect: true },
+          { name: 'Rojo', hex: '#ef4444', isCorrect: false },
+          { name: 'Morado', hex: '#a855f7', isCorrect: false },
+        ]
+      },
+      {
+        id: 'q5',
+        word: 'AMARILLO',
+        inkColorName: 'Morado',
+        inkHex: '#a855f7',
+        options: [
+          { name: 'Amarillo', hex: '#eab308', isCorrect: false },
+          { name: 'Morado', hex: '#a855f7', isCorrect: true },
+          { name: 'Azul', hex: '#3b82f6', isCorrect: false },
+          { name: 'Rojo', hex: '#ef4444', isCorrect: false },
+        ]
+      },
+      {
+        id: 'q6',
+        word: 'ROJO',
+        inkColorName: 'Negro',
+        inkHex: '#1e293b',
+        options: [
+          { name: 'Rojo', hex: '#ef4444', isCorrect: false },
+          { name: 'Verde', hex: '#22c55e', isCorrect: false },
+          { name: 'Negro', hex: '#1e293b', isCorrect: true },
+          { name: 'Naranja', hex: '#f97316', isCorrect: false },
+        ]
+      }
+    ]
+  },
+  {
+    level: 3,
+    mode: 'color_de_tinta',
+    instruction: '¡Mayor velocidad! Toca rápidamente el color real de la tinta.',
+    points: 4,
+    questions: [
+      {
+        id: 'q7',
+        word: 'VERDE',
+        inkColorName: 'Naranja',
+        inkHex: '#f97316',
+        options: [
+          { name: 'Verde', hex: '#22c55e', isCorrect: false },
+          { name: 'Naranja', hex: '#f97316', isCorrect: true },
+          { name: 'Azul', hex: '#3b82f6', isCorrect: false },
+          { name: 'Amarillo', hex: '#eab308', isCorrect: false },
+        ]
+      },
+      {
+        id: 'q8',
+        word: 'AZUL',
+        inkColorName: 'Rosa',
+        inkHex: '#ec4899',
+        options: [
+          { name: 'Azul', hex: '#3b82f6', isCorrect: false },
+          { name: 'Rosa', hex: '#ec4899', isCorrect: true },
+          { name: 'Morado', hex: '#a855f7', isCorrect: false },
+          { name: 'Rojo', hex: '#ef4444', isCorrect: false },
+        ]
+      },
+      {
+        id: 'q9',
+        word: 'NARANJA',
+        inkColorName: 'Azul',
+        inkHex: '#3b82f6',
+        options: [
+          { name: 'Naranja', hex: '#f97316', isCorrect: false },
+          { name: 'Azul', hex: '#3b82f6', isCorrect: true },
+          { name: 'Verde', hex: '#22c55e', isCorrect: false },
+          { name: 'Rosa', hex: '#ec4899', isCorrect: false },
+        ]
+      }
+    ]
+  }
+];
+
+export const PAREJAS_LEVELS: ParejasLevel[] = [
+  {
+    level: 1,
+    pairsCount: 3,
+    points: 3,
+    cards: [
+      { pairId: 'p1', label: 'Perro', emoji: '🐶', color: 'from-amber-400 to-orange-500' },
+      { pairId: 'p2', label: 'Gato', emoji: '🐱', color: 'from-emerald-400 to-teal-500' },
+      { pairId: 'p3', label: 'León', emoji: '🦁', color: 'from-yellow-400 to-amber-500' },
+    ]
+  },
+  {
+    level: 2,
+    pairsCount: 4,
+    points: 4,
+    cards: [
+      { pairId: 'p1', label: 'Manzana', emoji: '🍎', color: 'from-red-400 to-rose-500' },
+      { pairId: 'p2', label: 'Plátano', emoji: '🍌', color: 'from-yellow-400 to-amber-500' },
+      { pairId: 'p3', label: 'Uvas', emoji: '🍇', color: 'from-purple-400 to-indigo-500' },
+      { pairId: 'p4', label: 'Fresa', emoji: '🍓', color: 'from-pink-400 to-rose-500' },
+    ]
+  },
+  {
+    level: 3,
+    pairsCount: 6,
+    points: 5,
+    cards: [
+      { pairId: 'p1', label: 'Auto', emoji: '🚗', color: 'from-blue-400 to-indigo-500' },
+      { pairId: 'p2', label: 'Avión', emoji: '✈️', color: 'from-sky-400 to-cyan-500' },
+      { pairId: 'p3', label: 'Barco', emoji: '⛵', color: 'from-teal-400 to-emerald-500' },
+      { pairId: 'p4', label: 'Bicicleta', emoji: '🚲', color: 'from-orange-400 to-amber-500' },
+      { pairId: 'p5', label: 'Tren', emoji: '🚂', color: 'from-purple-400 to-fuchsia-500' },
+      { pairId: 'p6', label: 'Cohete', emoji: '🚀', color: 'from-red-400 to-rose-600' },
+    ]
+  }
+];
+
+export const ORDENAR_LEVELS: OrdenaFraseLevel[] = [
+  {
+    level: 1,
+    fullSentence: 'El gato toma leche',
+    scrambledWords: ['leche', 'El', 'toma', 'gato'],
+    hint: 'Pista: Comienza con la mayúscula "El" y termina en "leche".',
+    points: 3
+  },
+  {
+    level: 2,
+    fullSentence: 'El perro corre en el parque',
+    scrambledWords: ['parque', 'en', 'corre', 'El', 'el', 'perro'],
+    hint: 'Pista: ¿Quién realiza la acción y hacia dónde va?',
+    points: 3
+  },
+  {
+    level: 3,
+    fullSentence: 'Los pájaros cantan por la mañana',
+    scrambledWords: ['mañana', 'Los', 'por', 'cantan', 'la', 'pájaros'],
+    hint: 'Pista: Una frase sobre el amanecer y los animales que vuelan.',
+    points: 4
+  },
+  {
+    level: 4,
+    fullSentence: 'Mi hermana lee un libro interesante',
+    scrambledWords: ['interesante', 'libro', 'Mi', 'un', 'lee', 'hermana'],
+    hint: 'Pista: Comienza con "Mi" y habla sobre lectura.',
+    points: 4
+  }
+];
+
+export const INTRUSO_LEVELS: IntrusoLevel[] = [
+  {
+    level: 1,
+    categoryRule: 'Todos son animales',
+    explanation: 'La guitarra es un instrumento musical, no un animal.',
+    points: 3,
+    items: [
+      { id: '1', name: 'Elefante', emoji: '🐘', isIntruder: false },
+      { id: '2', name: 'Jirafa', emoji: '🦒', isIntruder: false },
+      { id: '3', name: 'Guitarra', emoji: '🎸', isIntruder: true },
+      { id: '4', name: 'León', emoji: '🦁', isIntruder: false },
+    ]
+  },
+  {
+    level: 2,
+    categoryRule: 'Todos son medios de transporte',
+    explanation: 'La manzana es una fruta comestible, no un transporte.',
+    points: 3,
+    items: [
+      { id: '1', name: 'Avión', emoji: '✈️', isIntruder: false },
+      { id: '2', name: 'Manzana', emoji: '🍎', isIntruder: true },
+      { id: '3', name: 'Autobús', emoji: '🚌', isIntruder: false },
+      { id: '4', name: 'Bicicleta', emoji: '🚲', isIntruder: false },
+    ]
+  },
+  {
+    level: 3,
+    categoryRule: 'Todos son alimentos saludables o frutas',
+    explanation: 'El martillo es una herramienta de carpintería.',
+    points: 4,
+    items: [
+      { id: '1', name: 'Plátano', emoji: '🍌', isIntruder: false },
+      { id: '2', name: 'Naranja', emoji: '🍊', isIntruder: false },
+      { id: '3', name: 'Zanahoria', emoji: '🥕', isIntruder: false },
+      { id: '4', name: 'Martillo', emoji: '🔨', isIntruder: true },
+    ]
+  },
+  {
+    level: 4,
+    categoryRule: 'Todos vuelan en el cielo',
+    explanation: 'El pez nada en el agua marina o de río.',
+    points: 4,
+    items: [
+      { id: '1', name: 'Águila', emoji: '🦅', isIntruder: false },
+      { id: '2', name: 'Pez payaso', emoji: '🐠', isIntruder: true },
+      { id: '3', name: 'Mariposa', emoji: '🦋', isIntruder: false },
+      { id: '4', name: 'Paloma', emoji: '🕊️', isIntruder: false },
+    ]
+  }
+];
+
+export const DIGITOS_LEVELS: DigitosLevel[] = [
+  {
+    level: 1,
+    sequence: [3, 8],
+    previewSeconds: 3,
+    points: 3,
+  },
+  {
+    level: 2,
+    sequence: [5, 2, 9],
+    previewSeconds: 4,
+    points: 3,
+  },
+  {
+    level: 3,
+    sequence: [4, 7, 1],
+    previewSeconds: 4,
+    points: 4,
+  },
+  {
+    level: 4,
+    sequence: [6, 3, 8, 2],
+    previewSeconds: 5,
+    points: 4,
+  },
+  {
+    level: 5,
+    sequence: [9, 1, 5, 8],
+    previewSeconds: 5,
+    points: 5,
+  }
+];
+
 export const TOTAL_LEVELS_COUNT = 16;
+

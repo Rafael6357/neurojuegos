@@ -41,70 +41,65 @@ export const VictoriaModal: React.FC<VictoriaModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-xs animate-in zoom-in-95 duration-200">
       <div 
         id="victoria_modal_card"
-        className="w-full max-w-md bg-gradient-to-b from-amber-50 via-orange-50 to-amber-100 border-4 border-amber-500 rounded-3xl shadow-2xl p-6 sm:p-8 text-center relative overflow-hidden"
+        className="w-full max-w-sm bg-white border border-stone-200 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.18)] p-6 sm:p-8 text-center relative overflow-hidden"
       >
-        {/* Background decorative glow */}
-        <div className="absolute -top-12 -left-12 w-36 h-36 bg-yellow-300/30 rounded-full blur-2xl pointer-events-none" />
-        <div className="absolute -bottom-12 -right-12 w-36 h-36 bg-orange-400/30 rounded-full blur-2xl pointer-events-none" />
-
         {/* Trophy icon */}
-        <div className="relative mx-auto w-24 h-24 mb-4 flex items-center justify-center">
-          <div className="absolute inset-0 bg-yellow-400 rounded-full animate-ping opacity-25" />
-          <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-amber-400 to-yellow-300 flex items-center justify-center shadow-lg border-4 border-white">
-            <Trophy className="w-10 h-10 text-amber-900 drop-shadow-md animate-bounce" />
+        <div className="relative mx-auto w-20 h-20 mb-3 flex items-center justify-center">
+          <div className="w-18 h-18 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center shadow-xs">
+            <Trophy className="w-9 h-9 text-amber-600" />
           </div>
         </div>
 
         {/* 3 Golden Stars */}
-        <div className="flex justify-center gap-2 mb-3">
-          <Star className="w-8 h-8 text-amber-400 fill-amber-400 drop-shadow-xs" />
-          <Star className="w-10 h-10 text-yellow-400 fill-yellow-400 -mt-2 drop-shadow-sm animate-pulse" />
-          <Star className="w-8 h-8 text-amber-400 fill-amber-400 drop-shadow-xs" />
+        <div className="flex justify-center gap-2 mb-2">
+          <Star className="w-6 h-6 text-amber-400 fill-amber-400 drop-shadow-xs" />
+          <Star className="w-8 h-8 text-amber-500 fill-amber-500 -mt-1 drop-shadow-xs" />
+          <Star className="w-6 h-6 text-amber-400 fill-amber-400 drop-shadow-xs" />
         </div>
 
         {/* Title */}
-        <h2 className="text-3xl font-black text-amber-900 tracking-wide mb-1">
+        <h2 className="text-2xl sm:text-3xl font-black text-stone-900 tracking-tight mb-1">
           ¡VICTORIA!
         </h2>
-        <p className="text-amber-800 font-bold text-base mb-2">
+        <p className="text-stone-600 font-bold text-sm mb-3">
           ¡Completaste el Nivel {levelNumber}!
         </p>
 
         {/* Points box */}
-        <div className="inline-flex items-center gap-2 px-5 py-2 rounded-2xl bg-amber-200/80 border-2 border-amber-400 text-amber-950 font-black text-lg mb-6 shadow-xs">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 font-black text-base mb-6 shadow-xs">
           <span>+{pointsEarned} Puntos Ganados</span>
         </div>
 
         {/* Actions */}
-        <div className="space-y-3">
+        <div className="space-y-2.5">
           {hasNextLevel && (
             <button
               id="btn_victoria_next_level"
               onClick={() => { playClick(); onNextLevel(); }}
-              className="w-full flex items-center justify-center gap-2 py-3 px-6 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold text-lg shadow-lg active:scale-95 transition border-b-4 border-teal-800"
+              className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-base shadow-xs active:scale-[0.98] transition cursor-pointer"
             >
               <span>Siguiente Nivel</span>
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-4 h-4" />
             </button>
           )}
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2.5">
             <button
               id="btn_victoria_repeat"
               onClick={() => { playClick(); onRepeatLevel(); }}
-              className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-2xl bg-amber-400 hover:bg-amber-500 text-amber-950 font-bold text-sm shadow-md active:scale-95 transition border-b-4 border-amber-600"
+              className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold text-sm shadow-xs active:scale-[0.98] transition border border-stone-200 cursor-pointer"
             >
-              <RotateCcw className="w-4 h-4" />
+              <RotateCcw className="w-4 h-4 text-stone-600" />
               <span>Repetir</span>
             </button>
 
             <button
               id="btn_victoria_to_levels"
               onClick={() => { playClick(); onReturnToLevels(); }}
-              className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm shadow-md active:scale-95 transition border-b-4 border-amber-700"
+              className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-sm shadow-xs active:scale-[0.98] transition cursor-pointer"
             >
               <ListFilter className="w-4 h-4" />
               <span>Niveles</span>

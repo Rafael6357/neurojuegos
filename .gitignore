@@ -1,6 +1,35 @@
-# Root gitignore — APK DE TESIS, NEUROJUEGOS
+# Root gitignore — NeuroJuegos (Vite + React + Capacitor)
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production build artifacts
+dist/
+dist-ssr/
+
+# Environment and local configs
+.env
+.env.*
+!.env.example
+*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
 .idea/
 *.iml
+.vscode/*
+!.vscode/extensions.json
+
+# Android build & local properties
 local.properties
 *.keystore
 *.jks
@@ -11,3 +40,4 @@ captures/
 .cxx/
 *.apk
 *.aab
+

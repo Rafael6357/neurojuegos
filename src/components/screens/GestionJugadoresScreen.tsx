@@ -53,34 +53,34 @@ export const GestionJugadoresScreen: React.FC<GestionJugadoresScreenProps> = ({
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] p-4 sm:p-8 bg-gradient-to-b from-amber-100 via-orange-50 to-amber-200">
+    <div className="min-h-[calc(100vh-64px)] p-4 sm:p-8 bg-[#131722] text-slate-100">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Navigation & Header */}
         <div className="flex items-center justify-between">
           <button
             id="btn_gestion_volver_inicio"
             onClick={() => { playClick(); onNavigate('inicio'); }}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-white hover:bg-amber-50 text-amber-950 font-bold text-sm shadow-sm border border-amber-300 active:scale-95 transition"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#1C212E] hover:bg-[#252B3B] text-slate-200 font-bold text-xs sm:text-sm shadow-xs border border-slate-700 active:scale-95 transition cursor-pointer"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4 text-slate-400" />
             <span>Volver a Inicio</span>
           </button>
 
           <button
             id="btn_gestion_ranking"
             onClick={() => { playClick(); onOpenRanking(); }}
-            className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-sm shadow-md active:scale-95 transition border-b-3 border-amber-700"
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-xs sm:text-sm shadow-xs active:scale-95 transition cursor-pointer border border-amber-500"
           >
-            <Trophy className="w-4 h-4 text-yellow-200" />
+            <Trophy className="w-4 h-4 text-amber-200" />
             <span>Ver Ranking</span>
           </button>
         </div>
 
         <div className="text-center">
-          <h1 className="text-3xl sm:text-4xl font-black text-amber-950 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-100 tracking-tight">
             Gestión de Jugadores
           </h1>
-          <p className="text-sm text-amber-900/80 font-medium mt-1">
+          <p className="text-xs sm:text-sm text-slate-400 font-medium mt-1">
             Registra nuevos perfiles y selecciona al jugador activo
           </p>
         </div>
@@ -89,29 +89,29 @@ export const GestionJugadoresScreen: React.FC<GestionJugadoresScreenProps> = ({
         {message && (
           <div
             id="gestion_feedback_message"
-            className={`p-3.5 rounded-2xl text-sm font-bold text-center border-2 shadow-xs transition ${
+            className={`p-3 rounded-2xl text-xs sm:text-sm font-bold text-center border shadow-2xs transition ${
               message.type === 'success'
-                ? 'bg-emerald-100 border-emerald-400 text-emerald-900'
-                : 'bg-rose-100 border-rose-400 text-rose-900'
+                ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-200'
+                : 'bg-rose-950/60 border-rose-500/40 text-rose-200'
             }`}
           >
             {message.text}
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Left Column: Register New Player Form */}
-          <div className="bg-white/90 backdrop-blur-xs border-3 border-amber-400 rounded-3xl p-6 shadow-md">
-            <div className="flex items-center gap-2 text-amber-900 font-extrabold text-lg mb-4">
-              <div className="p-2 rounded-xl bg-amber-100 text-amber-600">
-                <UserPlus className="w-5 h-5" />
+          <div className="bg-[#1C212E] border border-slate-700/80 rounded-3xl p-5 sm:p-6 shadow-xs">
+            <div className="flex items-center gap-2 text-slate-100 font-extrabold text-base mb-4">
+              <div className="p-2 rounded-xl bg-amber-500/15 text-amber-400 border border-amber-500/30">
+                <UserPlus className="w-4 h-4" />
               </div>
               <h2>Registrar Nuevo Jugador</h2>
             </div>
 
             <form onSubmit={handleRegister} className="space-y-4">
               <div>
-                <label htmlFor="input_player_name" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                <label htmlFor="input_player_name" className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
                   Nombre del Jugador
                 </label>
                 <div className="relative">
@@ -121,15 +121,15 @@ export const GestionJugadoresScreen: React.FC<GestionJugadoresScreenProps> = ({
                     value={nombre}
                     onChange={(e) => setNombre(e.target.value)}
                     placeholder="Ej. Mateo, Sofía, Lucas..."
-                    className="w-full px-4 py-3 rounded-2xl border-2 border-amber-200 focus:border-amber-500 focus:ring-3 focus:ring-amber-200 outline-none text-slate-800 font-bold placeholder:text-slate-400 transition"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#23293A] border border-slate-700 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/30 outline-none text-slate-100 font-bold placeholder:text-slate-500 transition text-sm"
                     maxLength={24}
                   />
-                  <Smile className="w-5 h-5 text-amber-400 absolute right-3.5 top-3.5 pointer-events-none" />
+                  <Smile className="w-4 h-4 text-slate-500 absolute right-3.5 top-3 pointer-events-none" />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="input_player_age" className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                <label htmlFor="input_player_age" className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
                   Edad del Jugador (Años)
                 </label>
                 <input
@@ -140,16 +140,16 @@ export const GestionJugadoresScreen: React.FC<GestionJugadoresScreenProps> = ({
                   value={edad}
                   onChange={(e) => setEdad(e.target.value === '' ? '' : Number(e.target.value))}
                   placeholder="5"
-                  className="w-full px-4 py-3 rounded-2xl border-2 border-amber-200 focus:border-amber-500 focus:ring-3 focus:ring-amber-200 outline-none text-slate-800 font-bold placeholder:text-slate-400 transition"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#23293A] border border-slate-700 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/30 outline-none text-slate-100 font-bold placeholder:text-slate-500 transition text-sm"
                 />
               </div>
 
               <button
                 id="btn_submit_registrar_jugador"
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl bg-amber-500 hover:bg-amber-600 active:scale-95 text-white font-extrabold text-base shadow-md transition border-b-4 border-amber-700"
+                className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-amber-600 hover:bg-amber-500 active:scale-[0.98] text-white font-extrabold text-sm shadow-xs transition cursor-pointer border border-amber-500"
               >
-                <Sparkles className="w-5 h-5 text-yellow-200" />
+                <Sparkles className="w-4 h-4 text-amber-200" />
                 <span>Registrar Jugador</span>
               </button>
             </form>
@@ -157,56 +157,56 @@ export const GestionJugadoresScreen: React.FC<GestionJugadoresScreenProps> = ({
 
           {/* Right Column: Active Player Summary */}
           {activePlayer && (
-            <div className="bg-gradient-to-b from-amber-50 to-orange-100 border-3 border-amber-400 rounded-3xl p-6 shadow-md flex flex-col justify-between">
+            <div className="bg-[#1C212E] border border-slate-700/80 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between">
               <div>
-                <span className="text-xs font-extrabold uppercase tracking-wider text-amber-700 block mb-2">
+                <span className="text-[11px] font-extrabold uppercase tracking-wider text-amber-400 block mb-2">
                   Jugador Seleccionado
                 </span>
-                <div className="flex items-center gap-4 mb-4">
-                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-tr ${activePlayer.avatarColor || 'from-amber-400 to-orange-500'} flex items-center justify-center text-white font-black text-2xl shadow-md ring-4 ring-white`}>
+                <div className="flex items-center gap-3.5 mb-4">
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-tr ${activePlayer.avatarColor || 'from-amber-400 to-orange-500'} flex items-center justify-center text-white font-black text-xl shadow-xs ring-2 ring-slate-700`}>
                     {activePlayer.nombre.charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <h3 className="text-2xl font-black text-slate-800">
+                    <h3 className="text-xl font-black text-slate-100">
                       {activePlayer.nombre}
                     </h3>
-                    <p className="text-sm font-semibold text-slate-500">
+                    <p className="text-xs font-semibold text-slate-400">
                       {activePlayer.edad} años
                     </p>
                   </div>
                 </div>
 
-                <div className="p-3.5 bg-white/80 rounded-2xl border border-amber-200 shadow-xs mb-4">
-                  <div className="flex items-center justify-between text-amber-900 font-extrabold text-sm mb-1">
+                <div className="p-3 bg-[#23293A] rounded-xl border border-slate-700 shadow-2xs mb-3">
+                  <div className="flex items-center justify-between text-amber-400 font-extrabold text-xs">
                     <span>Puntuación Total Acumulada</span>
-                    <div className="flex items-center gap-1 text-lg text-amber-600">
-                      <Star className="w-4 h-4 fill-amber-500 text-amber-500" />
+                    <div className="flex items-center gap-1 text-sm text-amber-400 font-black">
+                      <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
                       <span>{getTotalScore(activePlayer)} pts</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Breakdown per game */}
-                <div className="space-y-1.5 text-xs text-slate-600 font-semibold bg-white/60 p-3 rounded-2xl border border-amber-200/60">
-                  <div className="flex justify-between py-1 border-b border-amber-100">
+                <div className="space-y-1 text-xs text-slate-300 font-medium bg-[#171C28] p-3 rounded-xl border border-slate-800">
+                  <div className="flex justify-between py-0.5 border-b border-slate-800">
                     <span>Frases Verdadero o Falso:</span>
-                    <span className="font-bold text-slate-800">{activePlayer.puntuacionFrasesVoF} pts (Nivel {activePlayer.nivelFrasesVoF})</span>
+                    <span className="font-bold text-amber-400">{activePlayer.puntuacionFrasesVoF} pts (Nivel {activePlayer.nivelFrasesVoF})</span>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-amber-100">
+                  <div className="flex justify-between py-0.5 border-b border-slate-800">
                     <span>Identifica:</span>
-                    <span className="font-bold text-slate-800">{activePlayer.puntuacionIdentifica} pts (Nivel {activePlayer.nivelIdentifica})</span>
+                    <span className="font-bold text-amber-400">{activePlayer.puntuacionIdentifica} pts (Nivel {activePlayer.nivelIdentifica})</span>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-amber-100">
+                  <div className="flex justify-between py-0.5 border-b border-slate-800">
                     <span>Patrones:</span>
-                    <span className="font-bold text-slate-800">{activePlayer.puntuacionPatrones} pts (Nivel {activePlayer.nivelPatrones})</span>
+                    <span className="font-bold text-amber-400">{activePlayer.puntuacionPatrones} pts (Nivel {activePlayer.nivelPatrones})</span>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-amber-100">
+                  <div className="flex justify-between py-0.5 border-b border-slate-800">
                     <span>Adivina la Palabra:</span>
-                    <span className="font-bold text-slate-800">{activePlayer.puntuacionCadenaNum} pts (Nivel {activePlayer.nivelAdivina})</span>
+                    <span className="font-bold text-amber-400">{activePlayer.puntuacionCadenaNum} pts (Nivel {activePlayer.nivelAdivina})</span>
                   </div>
-                  <div className="flex justify-between py-1">
+                  <div className="flex justify-between py-0.5">
                     <span>Recuerda:</span>
-                    <span className="font-bold text-slate-800">{activePlayer.puntuacionMemo} pts (Nivel {activePlayer.nivelRecuerda})</span>
+                    <span className="font-bold text-amber-400">{activePlayer.puntuacionMemo} pts (Nivel {activePlayer.nivelRecuerda})</span>
                   </div>
                 </div>
               </div>
@@ -214,7 +214,7 @@ export const GestionJugadoresScreen: React.FC<GestionJugadoresScreenProps> = ({
               <button
                 id="btn_jugar_con_este_perfil"
                 onClick={() => { playClick(); onNavigate('panel_minijuegos'); }}
-                className="mt-4 w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold text-sm shadow-md active:scale-95 transition border-b-4 border-teal-800 text-center"
+                className="mt-4 w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm shadow-xs active:scale-[0.98] transition text-center cursor-pointer border border-emerald-500"
               >
                 JUGAR CON ESTE PERFIL
               </button>
@@ -223,15 +223,15 @@ export const GestionJugadoresScreen: React.FC<GestionJugadoresScreenProps> = ({
         </div>
 
         {/* Players List to Switch */}
-        <div className="bg-white/90 border-3 border-amber-400 rounded-3xl p-6 shadow-md">
-          <h2 className="text-lg font-black text-amber-950 mb-3">
+        <div className="bg-[#1C212E] border border-slate-700/80 rounded-3xl p-5 sm:p-6 shadow-xs">
+          <h2 className="text-base font-black text-slate-100 mb-1">
             Lista de Jugadores ({players.length})
           </h2>
-          <p className="text-xs text-slate-500 font-medium mb-4">
+          <p className="text-xs text-slate-400 font-medium mb-3.5">
             Toca a un jugador para seleccionarlo como jugador activo
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
             {players.map((p) => {
               const isSelected = activePlayer?.id === p.id;
               const total = getTotalScore(p);
@@ -241,28 +241,28 @@ export const GestionJugadoresScreen: React.FC<GestionJugadoresScreenProps> = ({
                   key={p.id}
                   id={`btn_select_player_${p.id}`}
                   onClick={() => handleSelectPlayer(p.id)}
-                  className={`p-3 rounded-2xl border-2 text-left flex items-center justify-between gap-3 transition active:scale-95 ${
+                  className={`p-3 rounded-2xl border text-left flex items-center justify-between gap-3 transition active:scale-95 cursor-pointer ${
                     isSelected
-                      ? 'bg-amber-100 border-amber-500 shadow-md ring-2 ring-amber-400/50'
-                      : 'bg-white border-amber-200 hover:border-amber-300 hover:bg-amber-50/50 shadow-xs'
+                      ? 'bg-amber-500/15 border-amber-500/50 shadow-xs'
+                      : 'bg-[#23293A] border-slate-700 hover:border-slate-600 hover:bg-[#2B3245] shadow-2xs'
                   }`}
                 >
-                  <div className="flex items-center gap-2.5">
-                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-tr ${p.avatarColor || 'from-amber-400 to-orange-500'} flex items-center justify-center text-white font-black text-base shadow-sm ring-1 ring-white`}>
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className={`w-9 h-9 rounded-xl bg-gradient-to-tr ${p.avatarColor || 'from-amber-400 to-orange-500'} flex items-center justify-center text-white font-black text-sm shadow-2xs shrink-0`}>
                       {p.nombre.charAt(0).toUpperCase()}
                     </div>
-                    <div>
-                      <h4 className="font-extrabold text-slate-800 text-sm leading-tight">
+                    <div className="min-w-0">
+                      <h4 className="font-extrabold text-slate-100 text-xs sm:text-sm truncate">
                         {p.nombre}
                       </h4>
-                      <span className="text-xs text-slate-500 font-semibold">
+                      <span className="text-[11px] text-slate-400 font-semibold block truncate">
                         {p.edad} años • {total} pts
                       </span>
                     </div>
                   </div>
 
                   {isSelected && (
-                    <div className="p-1 rounded-full bg-emerald-500 text-white shadow-xs">
+                    <div className="p-1 rounded-full bg-emerald-500 text-white shadow-2xs shrink-0">
                       <Check className="w-3.5 h-3.5 stroke-[3]" />
                     </div>
                   )}
