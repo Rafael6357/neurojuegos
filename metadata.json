@@ -1,0 +1,6 @@
+{
+  "name": "NeuroJuegos",
+  "description": "Aplicación interactiva y educativa diseñada para el desarrollo del lenguaje, memoria, atención y estimulación cognitiva infantil.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
