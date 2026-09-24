@@ -4,11 +4,13 @@ import {
   getPlayers,
   getActivePlayer,
   updatePlayerScoreAndLevel,
+  resetAllData,
 } from './services/storage';
 import { HeaderBar } from './components/HeaderBar';
+import { BottomNav } from './components/BottomNav';
 import { RankingModal } from './components/RankingModal';
 import { VictoriaModal } from './components/VictoriaModal';
-import { WalkingDonutLoader } from './components/WalkingDonutLoader';
+import { CosmicLoader } from './components/CosmicLoader';
 import { InicioScreen } from './components/screens/InicioScreen';
 import { GestionJugadoresScreen } from './components/screens/GestionJugadoresScreen';
 import { PanelMinijuegosScreen } from './components/screens/PanelMinijuegosScreen';
@@ -24,8 +26,29 @@ import { OrdenaFraseGame } from './components/screens/OrdenaFraseGame';
 import { IntrusoGame } from './components/screens/IntrusoGame';
 import { DigitosGame } from './components/screens/DigitosGame';
 import { AjustesScreen } from './components/screens/AjustesScreen';
-import { TOTAL_LEVELS_COUNT } from './data/gamesData';
-import { startMusic } from './utils/sound';
+import { GAMES_META, getLevelCount } from './data/gamesData';
+import { startMusic, stopMusic } from './utils/sound';
+import { CosmicBackground } from './components/ui/CosmicBackground';
+
+const LOADING_TITLES: Record<GameType, string> = {
+  frases_vof: 'Cargando Frases V o F...',
+  identifica: 'Cargando Identifica...',
+  patrones: 'Cargando Patrones...',
+  adivina_palabra: 'Cargando Adivina la Palabra...',
+  recuerda: 'Cargando Recuerda...',
+  stroop: 'Cargando Desafío Stroop...',
+  parejas: 'Cargando Parejas de Cartas...',
+  ordenar: 'Cargando Ordena la Frase...',
+  intruso: 'Cargando Encuentra el Intruso...',
+  digitos: 'Cargando Dígitos Inversos...',
+};
+
+const STATIC_TITLES: Partial<Record<ScreenType, string>> = {
+  gestion_jugadores: 'Gestión de Jugadores',
+  panel_minijuegos: 'Minijuegos',
+  niveles: 'Selección de Nivel',
+  ajustes: 'Ajustes',
+};
 
 export function App() {
   const isTest = typeof process !== 'undefined' && process.env?.NODE_ENV === 'test';
@@ -36,8 +59,10 @@ export function App() {
   const [selectedGame, setSelectedGame] = useState<GameType>('frases_vof');
   const [currentLevel, setCurrentLevel] = useState<number>(1);
   const [rankingOpen, setRankingOpen] = useState<boolean>(false);
+  /** Clave de sesión: remontar el juego garantiza estado fresco sin hacks de timing. */
+  const [sessionKey, setSessionKey] = useState<number>(0);
 
-  // Simulated walking donut loading screens
+  // Simulated cosmic loading screens
   const [appLoading, setAppLoading] = useState<boolean>(!isTest);
   const [gameLoading, setGameLoading] = useState<boolean>(false);
   const [gameLoadingTitle, setGameLoadingTitle] = useState<string>('Cargando minijuego...');
@@ -67,33 +92,18 @@ export function App() {
   // Synchronize background music theme with current screen and minigame
   useEffect(() => {
     if (currentScreen === 'ajustes') {
-      // Don't override user's manual preview in Ajustes
+      // Stop theme music so Ajustes previews play clean (no bleed).
+      stopMusic();
       return;
     }
 
-    if (
-      currentScreen === 'juego_frases_vof' ||
-      currentScreen === 'juego_identifica' ||
-      currentScreen === 'juego_adivina' ||
-      currentScreen === 'juego_ordenar'
-    ) {
-      startMusic('lenguaje');
-    } else if (
-      currentScreen === 'juego_recuerda' ||
-      currentScreen === 'juego_patrones' ||
-      currentScreen === 'juego_parejas' ||
-      currentScreen === 'juego_digitos'
-    ) {
-      startMusic('memoria');
-    } else if (
-      currentScreen === 'juego_stroop' ||
-      currentScreen === 'juego_intruso'
-    ) {
-      startMusic('atencion');
+    if (currentScreen.startsWith('juego_')) {
+      const area = GAMES_META[selectedGame].area;
+      startMusic(area);
     } else {
       startMusic('menu');
     }
-  }, [currentScreen]);
+  }, [currentScreen, selectedGame]);
 
   const handleSelectGame = (game: GameType) => {
     setSelectedGame(game);
@@ -102,55 +112,10 @@ export function App() {
 
   const handleSelectLevel = (level: number) => {
     setCurrentLevel(level);
-    let targetScreen: ScreenType = 'juego_frases_vof';
-    let gameTitle = 'Cargando minijuego...';
-
-    switch (selectedGame) {
-      case 'frases_vof':
-        targetScreen = 'juego_frases_vof';
-        gameTitle = 'Cargando Frases V o F...';
-        break;
-      case 'identifica':
-        targetScreen = 'juego_identifica';
-        gameTitle = 'Cargando Identifica...';
-        break;
-      case 'patrones':
-        targetScreen = 'juego_patrones';
-        gameTitle = 'Cargando Patrones...';
-        break;
-      case 'adivina_palabra':
-        targetScreen = 'juego_adivina';
-        gameTitle = 'Cargando Adivina la Palabra...';
-        break;
-      case 'recuerda':
-        targetScreen = 'juego_recuerda';
-        gameTitle = 'Cargando Recuerda...';
-        break;
-      case 'stroop':
-        targetScreen = 'juego_stroop';
-        gameTitle = 'Cargando Desafío Stroop...';
-        break;
-      case 'parejas':
-        targetScreen = 'juego_parejas';
-        gameTitle = 'Cargando Parejas de Cartas...';
-        break;
-      case 'ordenar':
-        targetScreen = 'juego_ordenar';
-        gameTitle = 'Cargando Ordena la Frase...';
-        break;
-      case 'intruso':
-        targetScreen = 'juego_intruso';
-        gameTitle = 'Cargando Encuentra el Intruso...';
-        break;
-      case 'digitos':
-        targetScreen = 'juego_digitos';
-        gameTitle = 'Cargando Dígitos Inversos...';
-        break;
-    }
-
-    setCurrentScreen(targetScreen);
+    setSessionKey(k => k + 1);
+    setCurrentScreen(GAMES_META[selectedGame].screen);
     if (!isTest) {
-      setGameLoadingTitle(gameTitle);
+      setGameLoadingTitle(LOADING_TITLES[selectedGame]);
       setGameLoading(true);
     }
   };
@@ -158,52 +123,7 @@ export function App() {
   const handleWin = (points: number) => {
     if (!activePlayer) return;
 
-    let gameKey:
-      | 'FrasesVoF'
-      | 'Identifica'
-      | 'Patrones'
-      | 'Adivina'
-      | 'Recuerda'
-      | 'Stroop'
-      | 'Parejas'
-      | 'Ordenar'
-      | 'Intruso'
-      | 'Digitos' = 'FrasesVoF';
-
-    switch (selectedGame) {
-      case 'frases_vof':
-        gameKey = 'FrasesVoF';
-        break;
-      case 'identifica':
-        gameKey = 'Identifica';
-        break;
-      case 'patrones':
-        gameKey = 'Patrones';
-        break;
-      case 'adivina_palabra':
-        gameKey = 'Adivina';
-        break;
-      case 'recuerda':
-        gameKey = 'Recuerda';
-        break;
-      case 'stroop':
-        gameKey = 'Stroop';
-        break;
-      case 'parejas':
-        gameKey = 'Parejas';
-        break;
-      case 'ordenar':
-        gameKey = 'Ordenar';
-        break;
-      case 'intruso':
-        gameKey = 'Intruso';
-        break;
-      case 'digitos':
-        gameKey = 'Digitos';
-        break;
-    }
-
-    const updated = updatePlayerScoreAndLevel(activePlayer.id, gameKey, points, currentLevel);
+    const updated = updatePlayerScoreAndLevel(activePlayer.id, selectedGame, points, currentLevel);
     if (updated) {
       setActivePlayer(updated);
       setPlayers(getPlayers());
@@ -219,8 +139,9 @@ export function App() {
   const handleNextLevel = () => {
     setVictoryState(prev => ({ ...prev, isOpen: false }));
     const next = currentLevel + 1;
-    if (next <= TOTAL_LEVELS_COUNT) {
+    if (next <= getLevelCount(selectedGame)) {
       setCurrentLevel(next);
+      setSessionKey(k => k + 1);
     } else {
       setCurrentScreen('niveles');
     }
@@ -228,10 +149,8 @@ export function App() {
 
   const handleRepeatLevel = () => {
     setVictoryState(prev => ({ ...prev, isOpen: false }));
-    // Force re-render of game screen by refreshing level
-    const lvl = currentLevel;
-    setCurrentLevel(0);
-    setTimeout(() => setCurrentLevel(lvl), 50);
+    // Fresh remount: deterministic, no timing hacks.
+    setSessionKey(k => k + 1);
   };
 
   const handleReturnToLevels = () => {
@@ -239,44 +158,30 @@ export function App() {
     setCurrentScreen('niveles');
   };
 
-  // Screen Title helper
-  const getHeaderTitle = () => {
-    switch (currentScreen) {
-      case 'gestion_jugadores':
-        return 'Gestión de Jugadores';
-      case 'panel_minijuegos':
-        return 'Minijuegos';
-      case 'niveles':
-        return 'Selección de Nivel';
-      case 'juego_frases_vof':
-        return 'Frases V o F';
-      case 'juego_identifica':
-        return 'Identifica';
-      case 'juego_patrones':
-        return 'Patrones';
-      case 'juego_adivina':
-        return 'Adivina la Palabra';
-      case 'juego_recuerda':
-        return 'Recuerda';
-      case 'juego_stroop':
-        return 'Desafío de Colores';
-      case 'juego_parejas':
-        return 'Parejas de Cartas';
-      case 'juego_ordenar':
-        return 'Ordena la Frase';
-      case 'juego_intruso':
-        return 'Encuentra el Intruso';
-      case 'juego_digitos':
-        return 'Dígitos Inversos';
-      case 'ajustes':
-        return 'Ajustes';
-      default:
-        return undefined;
-    }
+  const handleResetData = () => {
+    resetAllData();
+    refreshPlayers();
+    setSelectedGame('frases_vof');
+    setCurrentLevel(1);
+    setCurrentScreen('inicio');
   };
 
+  // Screen Title helper
+  const getHeaderTitle = (): string | undefined => {
+    if (currentScreen.startsWith('juego_')) {
+      const meta = Object.values(GAMES_META).find(m => m.screen === currentScreen);
+      return meta?.title;
+    }
+    return STATIC_TITLES[currentScreen];
+  };
+
+  const gameKey = `${currentScreen}-${selectedGame}-${currentLevel}-${sessionKey}`;
+
+  // Stitch tab bar: visible on hub screens, hidden inside games for full play area.
+  const showTabs = !currentScreen.startsWith('juego_');
+
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col font-sans select-none antialiased">
+    <div className="min-h-screen bg-[#070b1d] flex flex-col font-sans select-none antialiased">
       <HeaderBar
         player={activePlayer}
         currentScreen={currentScreen}
@@ -285,13 +190,14 @@ export function App() {
         title={getHeaderTitle()}
       />
 
-      <main className="flex-1">
+      <main className={`flex-1 ${showTabs ? 'pb-24' : ''}`}>
         {currentScreen === 'inicio' && (
           <InicioScreen
             player={activePlayer}
             players={players}
             onNavigate={setCurrentScreen}
             onOpenRanking={() => setRankingOpen(true)}
+            onQuickPlay={handleSelectGame}
           />
         )}
 
@@ -324,92 +230,128 @@ export function App() {
         )}
 
         {currentScreen === 'juego_frases_vof' && currentLevel > 0 && (
-          <FrasesVoFGame
-            levelNumber={currentLevel}
-            onWin={handleWin}
-            onReturnToLevels={() => setCurrentScreen('niveles')}
-          />
+          <CosmicBackground>
+            <FrasesVoFGame
+              key={gameKey}
+              levelNumber={currentLevel}
+              onWin={handleWin}
+              onReturnToLevels={() => setCurrentScreen('niveles')}
+            />
+          </CosmicBackground>
         )}
 
         {currentScreen === 'juego_identifica' && currentLevel > 0 && (
-          <IdentificaGame
-            levelNumber={currentLevel}
-            onWin={handleWin}
-            onReturnToLevels={() => setCurrentScreen('niveles')}
-          />
+          <CosmicBackground>
+            <IdentificaGame
+              key={gameKey}
+              levelNumber={currentLevel}
+              onWin={handleWin}
+              onReturnToLevels={() => setCurrentScreen('niveles')}
+            />
+          </CosmicBackground>
         )}
 
         {currentScreen === 'juego_patrones' && currentLevel > 0 && (
-          <PatronesGame
-            levelNumber={currentLevel}
-            onWin={handleWin}
-            onReturnToLevels={() => setCurrentScreen('niveles')}
-          />
+          <CosmicBackground>
+            <PatronesGame
+              key={gameKey}
+              levelNumber={currentLevel}
+              onWin={handleWin}
+              onReturnToLevels={() => setCurrentScreen('niveles')}
+            />
+          </CosmicBackground>
         )}
 
         {currentScreen === 'juego_adivina' && currentLevel > 0 && (
-          <AdivinaPalabraGame
-            levelNumber={currentLevel}
-            onWin={handleWin}
-            onReturnToLevels={() => setCurrentScreen('niveles')}
-          />
+          <CosmicBackground>
+            <AdivinaPalabraGame
+              key={gameKey}
+              levelNumber={currentLevel}
+              onWin={handleWin}
+              onReturnToLevels={() => setCurrentScreen('niveles')}
+            />
+          </CosmicBackground>
         )}
 
         {currentScreen === 'juego_recuerda' && currentLevel > 0 && (
-          <RecuerdaGame
-            levelNumber={currentLevel}
-            onWin={handleWin}
-            onReturnToLevels={() => setCurrentScreen('niveles')}
-          />
+          <CosmicBackground>
+            <RecuerdaGame
+              key={gameKey}
+              levelNumber={currentLevel}
+              onWin={handleWin}
+              onReturnToLevels={() => setCurrentScreen('niveles')}
+            />
+          </CosmicBackground>
         )}
 
         {currentScreen === 'juego_stroop' && currentLevel > 0 && (
-          <StroopGame
-            levelNumber={currentLevel}
-            onWin={handleWin}
-            onReturnToLevels={() => setCurrentScreen('niveles')}
-          />
+          <CosmicBackground>
+            <StroopGame
+              key={gameKey}
+              levelNumber={currentLevel}
+              onWin={handleWin}
+              onReturnToLevels={() => setCurrentScreen('niveles')}
+            />
+          </CosmicBackground>
         )}
 
         {currentScreen === 'juego_parejas' && currentLevel > 0 && (
-          <ParejasGame
-            levelNumber={currentLevel}
-            onWin={handleWin}
-            onReturnToLevels={() => setCurrentScreen('niveles')}
-          />
+          <CosmicBackground>
+            <ParejasGame
+              key={gameKey}
+              levelNumber={currentLevel}
+              onWin={handleWin}
+              onReturnToLevels={() => setCurrentScreen('niveles')}
+            />
+          </CosmicBackground>
         )}
 
         {currentScreen === 'juego_ordenar' && currentLevel > 0 && (
-          <OrdenaFraseGame
-            levelNumber={currentLevel}
-            onWin={handleWin}
-            onReturnToLevels={() => setCurrentScreen('niveles')}
-          />
+          <CosmicBackground>
+            <OrdenaFraseGame
+              key={gameKey}
+              levelNumber={currentLevel}
+              onWin={handleWin}
+              onReturnToLevels={() => setCurrentScreen('niveles')}
+            />
+          </CosmicBackground>
         )}
 
         {currentScreen === 'juego_intruso' && currentLevel > 0 && (
-          <IntrusoGame
-            levelNumber={currentLevel}
-            onWin={handleWin}
-            onReturnToLevels={() => setCurrentScreen('niveles')}
-          />
+          <CosmicBackground>
+            <IntrusoGame
+              key={gameKey}
+              levelNumber={currentLevel}
+              onWin={handleWin}
+              onReturnToLevels={() => setCurrentScreen('niveles')}
+            />
+          </CosmicBackground>
         )}
 
         {currentScreen === 'juego_digitos' && currentLevel > 0 && (
-          <DigitosGame
-            levelNumber={currentLevel}
-            onWin={handleWin}
-            onReturnToLevels={() => setCurrentScreen('niveles')}
-          />
+          <CosmicBackground>
+            <DigitosGame
+              key={gameKey}
+              levelNumber={currentLevel}
+              onWin={handleWin}
+              onReturnToLevels={() => setCurrentScreen('niveles')}
+            />
+          </CosmicBackground>
         )}
 
         {currentScreen === 'ajustes' && (
           <AjustesScreen
             onNavigate={setCurrentScreen}
             onOpenRanking={() => setRankingOpen(true)}
+            onResetData={handleResetData}
           />
         )}
       </main>
+
+      {/* Global bottom tab bar (Stitch navigation) */}
+      {showTabs && !appLoading && (
+        <BottomNav currentScreen={currentScreen} onNavigate={setCurrentScreen} />
+      )}
 
       {/* Global Ranking Modal */}
       <RankingModal
@@ -427,12 +369,12 @@ export function App() {
         onNextLevel={handleNextLevel}
         onRepeatLevel={handleRepeatLevel}
         onReturnToLevels={handleReturnToLevels}
-        hasNextLevel={victoryState.levelNumber < TOTAL_LEVELS_COUNT}
+        hasNextLevel={victoryState.levelNumber < getLevelCount(selectedGame)}
       />
 
-      {/* Simulated Walking Donut Loader for App Boot and Minigames */}
+      {/* Simulated Cosmic Loader for App Boot and Minigames */}
       {appLoading && (
-        <WalkingDonutLoader
+        <CosmicLoader
           message="Cargando el juego..."
           submessage="¡Preparando diversión y estimulación cognitiva!"
           duration={1300}
@@ -441,7 +383,7 @@ export function App() {
       )}
 
       {gameLoading && (
-        <WalkingDonutLoader
+        <CosmicLoader
           message={gameLoadingTitle}
           submessage="¡Preparando tu desafío cognitivo!"
           duration={900}

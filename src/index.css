@@ -1,179 +1,234 @@
 @import "tailwindcss";
 
 @layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
   body {
     font-family: 'Fredoka', 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #131722;
+    background-color: #070b1d;
     color: #f1f5f9;
+    overflow-x: hidden;
+  }
+
+  button {
+    touch-action: manipulation;
+  }
+
+  :focus-visible {
+    outline: 3px solid #fbbf24;
+    outline-offset: 2px;
+    border-radius: 0.75rem;
   }
 }
 
-/* Eye-comfort dark mode enforce for minigame screens */
-.bg-\[\#FAF8F5\] {
-  background-color: #131722 !important;
-  color: #f1f5f9 !important;
+/* ---------- Cosmic starfield (static box-shadow layers, zero markup/JS) ---------- */
+.cosmos {
+  background:
+    radial-gradient(1100px 500px at 85% -5%, rgba(167, 139, 250, 0.16), transparent 60%),
+    radial-gradient(900px 480px at 8% 12%, rgba(45, 212, 191, 0.13), transparent 60%),
+    radial-gradient(1000px 620px at 50% 115%, rgba(251, 191, 36, 0.1), transparent 60%),
+    linear-gradient(180deg, #0a1030 0%, #070b1d 45%, #05081a 100%);
 }
 
-.bg-\[\#FAF8F5\] .bg-white {
-  background-color: #1C212E !important;
-  border-color: #334155 !important;
-  color: #f1f5f9 !important;
+.stars,
+.stars2,
+.stars3 {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: transparent;
 }
 
-.bg-\[\#FAF8F5\] .text-stone-900 {
-  color: #f8fafc !important;
+.stars::after,
+.stars2::after,
+.stars3::after {
+  content: '';
+  position: absolute;
+  border-radius: 9999px;
+  background: transparent;
 }
 
-.bg-\[\#FAF8F5\] .text-stone-700 {
-  color: #e2e8f0 !important;
+.stars::after {
+  width: 2px;
+  height: 2px;
+  box-shadow:
+    12vw 8vh 0 #fff, 28vw 22vh 0 #c7d2fe, 45vw 6vh 0 #fff, 63vw 18vh 0 #99f6e4,
+    78vw 9vh 0 #fff, 91vw 26vh 0 #fde68a, 8vw 44vh 0 #fff, 22vw 58vh 0 #ddd6fe,
+    37vw 47vh 0 #fff, 55vw 62vh 0 #a5f3fc, 70vw 51vh 0 #fff, 86vw 66vh 0 #fecdd3,
+    15vw 78vh 0 #fff, 33vw 88vh 0 #fde68a, 52vw 79vh 0 #fff, 68vw 90vh 0 #c7d2fe,
+    84vw 80vh 0 #fff, 95vw 45vh 0 #99f6e4, 5vw 20vh 0 #fecdd3, 48vw 33vh 0 #fff;
+  animation: twinkle 3.2s ease-in-out infinite;
 }
 
-.bg-\[\#FAF8F5\] .text-stone-500 {
-  color: #94a3b8 !important;
+.stars2::after {
+  width: 3px;
+  height: 3px;
+  box-shadow:
+    18vw 14vh 0 #fff, 58vw 10vh 0 #fde68a, 82vw 34vh 0 #fff, 30vw 70vh 0 #fff,
+    62vw 74vh 0 #ddd6fe, 90vw 88vh 0 #fff, 6vw 60vh 0 #a5f3fc, 44vw 92vh 0 #fff;
+  animation: twinkle 4.6s ease-in-out infinite 0.8s;
 }
 
-.bg-\[\#FAF8F5\] .border-stone-200 {
-  border-color: #334155 !important;
+.stars3::after {
+  width: 1px;
+  height: 1px;
+  opacity: 0.8;
+  box-shadow:
+    4vw 30vh 0 #fff, 24vw 12vh 0 #fff, 40vw 26vh 0 #fff, 60vw 40vh 0 #fff,
+    74vw 22vh 0 #fff, 88vw 55vh 0 #fff, 12vw 66vh 0 #fff, 28vw 82vh 0 #fff,
+    50vw 58vh 0 #fff, 66vw 84vh 0 #fff, 80vw 72vh 0 #fff, 94vw 12vh 0 #fff,
+    36vw 4vh 0 #fff, 70vw 4vh 0 #fff, 8vw 92vh 0 #fff, 56vw 96vh 0 #fff;
+  animation: twinkle 5.8s ease-in-out infinite 1.6s;
 }
 
-.bg-\[\#FAF8F5\] .bg-stone-50 {
-  background-color: #23293A !important;
-  border-color: #334155 !important;
-  color: #e2e8f0 !important;
+/* ---------- Keyframes (sparse, purposeful) ---------- */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
 }
 
-.bg-\[\#FAF8F5\] .bg-stone-100 {
-  background-color: #1E2536 !important;
-  border-color: #334155 !important;
-  color: #94a3b8 !important;
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
-.bg-\[\#FAF8F5\] .bg-stone-900 {
-  background-color: #D97706 !important;
-  color: #ffffff !important;
+@keyframes pop-in {
+  0% { opacity: 0; transform: scale(0.92) translateY(10px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-/* Custom eye-comfort dark scrollbar */
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+
+@keyframes orbit-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(14px, -12px); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.anim-floaty { animation: floaty 5s ease-in-out infinite; }
+.anim-pop-in { animation: pop-in 0.35s cubic-bezier(0.34, 1.4, 0.64, 1) both; }
+.anim-rise-in { animation: rise-in 0.4s ease-out both; }
+.anim-wiggle { animation: wiggle 2.4s ease-in-out infinite; }
+.anim-orbit { animation: orbit-spin 14s linear infinite; }
+.anim-drift { animation: drift 9s ease-in-out infinite; }
+.anim-glow { animation: glow-pulse 3s ease-in-out infinite; }
+
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.12s; }
+.stagger-3 { animation-delay: 0.19s; }
+.stagger-4 { animation-delay: 0.26s; }
+.stagger-5 { animation-delay: 0.33s; }
+
+/* Orbit ring decoration for planet cards */
+.orbit-ring {
+  position: absolute;
+  border: 1.5px dashed rgba(255, 255, 255, 0.22);
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-floaty, .anim-wiggle, .anim-orbit, .anim-drift, .anim-glow,
+  .stars::after, .stars2::after, .stars3::after {
+    animation: none;
+  }
+  .anim-pop-in, .anim-rise-in {
+    animation-duration: 0.01ms;
+  }
+}
+
+/* ---------- Stitch "Tactile Cosmic Glass": chunky extruded toy buttons ---------- */
+@layer components {
+  .btn-chunky-teal {
+    border-radius: 9999px;
+    background-image: linear-gradient(to right, #29a195, #0d9488, #10b981);
+    color: #00302b;
+    box-shadow: 0 6px 0 #0f766e, 0 12px 28px rgba(13, 148, 136, 0.45);
+    transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.15s ease;
+  }
+  .btn-chunky-teal:hover {
+    filter: brightness(1.08);
+  }
+  .btn-chunky-teal:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #0f766e, 0 6px 16px rgba(13, 148, 136, 0.4);
+  }
+
+  .btn-chunky-amber {
+    border-radius: 9999px;
+    background-image: linear-gradient(to bottom, #fcd34d, #f59e0b);
+    color: #451a03;
+    box-shadow: 0 6px 0 #b45309, 0 12px 28px rgba(245, 158, 11, 0.4);
+    transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.15s ease;
+  }
+  .btn-chunky-amber:hover {
+    filter: brightness(1.06);
+  }
+  .btn-chunky-amber:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #b45309, 0 6px 16px rgba(245, 158, 11, 0.35);
+  }
+
+  .btn-chunky-violet {
+    border-radius: 9999px;
+    background-image: linear-gradient(to right, #a78bfa, #8b5cf6);
+    color: #23005c;
+    box-shadow: 0 6px 0 #5b21b6, 0 12px 28px rgba(139, 92, 246, 0.4);
+    transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.15s ease;
+  }
+  .btn-chunky-violet:hover {
+    filter: brightness(1.08);
+  }
+  .btn-chunky-violet:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #5b21b6, 0 6px 16px rgba(139, 92, 246, 0.35);
+  }
+
+  /* Tactile playing cards and tiles */
+  .tile-chunky {
+    border-radius: 1.5rem;
+    background-color: #1a1f31;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35), 0 10px 28px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Safe-area clearance for the fixed tab bar (Capacitor notches) */
+  .tab-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Custom dark scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #181c26;
+  background: #0a1030;
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #2b3566;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
-}
-
-/* WALKING DONUT SIMULATED LOADER ANIMATIONS */
-@keyframes donut-body-bob {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  25% {
-    transform: translateY(-5px) rotate(-1.5deg);
-  }
-  50% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  75% {
-    transform: translateY(-5px) rotate(1.5deg);
-  }
-}
-
-@keyframes donut-leg-left-walk {
-  0%, 100% {
-    transform: rotate(-18deg) translateY(0);
-  }
-  50% {
-    transform: rotate(20deg) translateY(-3px);
-  }
-}
-
-@keyframes donut-leg-right-walk {
-  0%, 100% {
-    transform: rotate(20deg) translateY(-3px);
-  }
-  50% {
-    transform: rotate(-18deg) translateY(0);
-  }
-}
-
-@keyframes donut-arm-left-swing {
-  0%, 100% {
-    transform: rotate(15deg);
-  }
-  50% {
-    transform: rotate(-15deg);
-  }
-}
-
-@keyframes donut-arm-right-swing {
-  0%, 100% {
-    transform: rotate(-15deg);
-  }
-  50% {
-    transform: rotate(15deg);
-  }
-}
-
-@keyframes donut-shadow-breathe {
-  0%, 50%, 100% {
-    transform: scaleX(1);
-    opacity: 0.6;
-  }
-  25%, 75% {
-    transform: scaleX(0.88);
-    opacity: 0.45;
-  }
-}
-
-@keyframes dust-puff {
-  0% {
-    opacity: 0.5;
-    transform: translate(0, 0) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-10px, -6px) scale(1.8);
-  }
-}
-
-.donut-body-anim {
-  animation: donut-body-bob 0.7s infinite ease-in-out;
-}
-
-.donut-leg-left-anim {
-  animation: donut-leg-left-walk 0.7s infinite ease-in-out;
-}
-
-.donut-leg-right-anim {
-  animation: donut-leg-right-walk 0.7s infinite ease-in-out;
-}
-
-.donut-arm-left-anim {
-  animation: donut-arm-left-swing 0.7s infinite ease-in-out;
-}
-
-.donut-arm-right-anim {
-  animation: donut-arm-right-swing 0.7s infinite ease-in-out;
-}
-
-.donut-shadow-anim {
-  transform-origin: 100px 218px;
-  animation: donut-shadow-breathe 0.7s infinite ease-in-out;
-}
-
-.dust-puff-1 {
-  animation: dust-puff 0.7s infinite linear;
-}
-.dust-puff-2 {
-  animation: dust-puff 0.7s infinite linear 0.35s;
-}
-.dust-puff-3 {
-  animation: dust-puff 0.7s infinite linear 0.18s;
+  background: #3b4788;
 }

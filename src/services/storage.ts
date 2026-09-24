@@ -1,4 +1,5 @@
-import { Player } from '../types';
+import { GameType, Player } from '../types';
+import { getLevelCount } from '../data/gamesData';
 
 const PLAYERS_KEY = 'neurojuegos_players_v1';
 const ACTIVE_PLAYER_KEY = 'neurojuegos_active_player_v1';
@@ -54,8 +55,46 @@ const DEFAULT_PLAYERS: Player[] = [
     nivelAdivina: 2,
     nivelRecuerda: 1,
     createdAt: Date.now() - 86400000,
-  }
+  },
 ];
+
+/* Mapa único juego → campos del Player: adiós a los switch gigantes. */
+const SCORE_FIELD: Record<GameType, keyof Player> = {
+  frases_vof: 'puntuacionFrasesVoF',
+  identifica: 'puntuacionIdentifica',
+  patrones: 'puntuacionPatrones',
+  adivina_palabra: 'puntuacionCadenaNum',
+  recuerda: 'puntuacionMemo',
+  stroop: 'puntuacionStroop',
+  parejas: 'puntuacionParejas',
+  ordenar: 'puntuacionOrdenar',
+  intruso: 'puntuacionIntruso',
+  digitos: 'puntuacionDigitos',
+};
+
+const LEVEL_FIELD: Record<GameType, keyof Player> = {
+  frases_vof: 'nivelFrasesVoF',
+  identifica: 'nivelIdentifica',
+  patrones: 'nivelPatrones',
+  adivina_palabra: 'nivelAdivina',
+  recuerda: 'nivelRecuerda',
+  stroop: 'nivelStroop',
+  parejas: 'nivelParejas',
+  ordenar: 'nivelOrdenar',
+  intruso: 'nivelIntruso',
+  digitos: 'nivelDigitos',
+};
+
+/** Puntos acumulados en un juego concreto. */
+export const getGameScore = (p: Player, game: GameType): number => {
+  return (p[SCORE_FIELD[game]] as number | undefined) || 0;
+};
+
+/** Nivel desbloqueado (1-based) en un juego concreto. */
+export const getGameLevel = (p: Player | null | undefined, game: GameType): number => {
+  if (!p) return 1;
+  return (p[LEVEL_FIELD[game]] as number | undefined) || 1;
+};
 
 export const getTotalScore = (p: Player): number => {
   return (
@@ -121,8 +160,11 @@ const AVATAR_COLORS = [
   'from-sky-400 to-blue-500',
   'from-emerald-400 to-teal-500',
   'from-purple-400 to-indigo-500',
-  'from-yellow-400 to-amber-500'
+  'from-yellow-400 to-amber-500',
 ];
+
+export const MIN_PLAYER_AGE = 1;
+export const MAX_PLAYER_AGE = 12;
 
 export const createPlayer = (nombre: string, edad: number): Player => {
   const players = getPlayers();
@@ -130,7 +172,7 @@ export const createPlayer = (nombre: string, edad: number): Player => {
   const newPlayer: Player = {
     id: 'p-' + Date.now(),
     nombre: nombre.trim(),
-    edad: Math.max(1, Math.min(12, edad)),
+    edad: Math.max(MIN_PLAYER_AGE, Math.min(MAX_PLAYER_AGE, edad)),
     avatarColor: color,
     puntuacionFrasesVoF: 0,
     puntuacionIdentifica: 0,
@@ -163,71 +205,24 @@ export const createPlayer = (nombre: string, edad: number): Player => {
 
 export const updatePlayerScoreAndLevel = (
   playerId: string,
-  gameKey:
-    | 'FrasesVoF'
-    | 'Identifica'
-    | 'Patrones'
-    | 'Adivina'
-    | 'Recuerda'
-    | 'Stroop'
-    | 'Parejas'
-    | 'Ordenar'
-    | 'Intruso'
-    | 'Digitos',
+  game: GameType,
   pointsEarned: number,
   completedLevel: number
 ): Player | null => {
   const players = getPlayers();
   let updatedPlayer: Player | null = null;
 
+  const scoreField = SCORE_FIELD[game];
+  const levelField = LEVEL_FIELD[game];
+  // El desbloqueo nunca supera el contenido real del juego.
+  const nextLevel = Math.min(completedLevel + 1, getLevelCount(game));
+
   const nextPlayers = players.map(p => {
     if (p.id !== playerId) return p;
 
     const copy = { ...p };
-    const nextLevel = completedLevel + 1;
-
-    switch (gameKey) {
-      case 'FrasesVoF':
-        copy.puntuacionFrasesVoF = (copy.puntuacionFrasesVoF || 0) + pointsEarned;
-        copy.nivelFrasesVoF = Math.max(copy.nivelFrasesVoF || 1, nextLevel);
-        break;
-      case 'Identifica':
-        copy.puntuacionIdentifica = (copy.puntuacionIdentifica || 0) + pointsEarned;
-        copy.nivelIdentifica = Math.max(copy.nivelIdentifica || 1, nextLevel);
-        break;
-      case 'Patrones':
-        copy.puntuacionPatrones = (copy.puntuacionPatrones || 0) + pointsEarned;
-        copy.nivelPatrones = Math.max(copy.nivelPatrones || 1, nextLevel);
-        break;
-      case 'Adivina':
-        copy.puntuacionCadenaNum = (copy.puntuacionCadenaNum || 0) + pointsEarned;
-        copy.nivelAdivina = Math.max(copy.nivelAdivina || 1, nextLevel);
-        break;
-      case 'Recuerda':
-        copy.puntuacionMemo = (copy.puntuacionMemo || 0) + pointsEarned;
-        copy.nivelRecuerda = Math.max(copy.nivelRecuerda || 1, nextLevel);
-        break;
-      case 'Stroop':
-        copy.puntuacionStroop = (copy.puntuacionStroop || 0) + pointsEarned;
-        copy.nivelStroop = Math.max(copy.nivelStroop || 1, nextLevel);
-        break;
-      case 'Parejas':
-        copy.puntuacionParejas = (copy.puntuacionParejas || 0) + pointsEarned;
-        copy.nivelParejas = Math.max(copy.nivelParejas || 1, nextLevel);
-        break;
-      case 'Ordenar':
-        copy.puntuacionOrdenar = (copy.puntuacionOrdenar || 0) + pointsEarned;
-        copy.nivelOrdenar = Math.max(copy.nivelOrdenar || 1, nextLevel);
-        break;
-      case 'Intruso':
-        copy.puntuacionIntruso = (copy.puntuacionIntruso || 0) + pointsEarned;
-        copy.nivelIntruso = Math.max(copy.nivelIntruso || 1, nextLevel);
-        break;
-      case 'Digitos':
-        copy.puntuacionDigitos = (copy.puntuacionDigitos || 0) + pointsEarned;
-        copy.nivelDigitos = Math.max(copy.nivelDigitos || 1, nextLevel);
-        break;
-    }
+    copy[scoreField] = (((copy[scoreField] as number | undefined) || 0) + pointsEarned) as never;
+    copy[levelField] = Math.max(((copy[levelField] as number | undefined) || 1), nextLevel) as never;
 
     updatedPlayer = copy;
     return copy;
@@ -235,4 +230,11 @@ export const updatePlayerScoreAndLevel = (
 
   savePlayers(nextPlayers);
   return updatedPlayer;
+};
+
+/** Borra perfiles y selección sin recargar la página (reset suave). */
+export const resetAllData = (): void => {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(PLAYERS_KEY);
+  localStorage.removeItem(ACTIVE_PLAYER_KEY);
 };

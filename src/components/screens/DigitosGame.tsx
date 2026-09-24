@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { DIGITOS_LEVELS, DigitosLevel } from '../../data/gamesData';
+import React, { useState, useEffect, useRef } from 'react';
+import { DIGITOS_LEVELS, DigitosLevel, GAMES_META, getLevelCount } from '../../data/gamesData';
 import { playClick, playCorrect, playError, playCountdownTick } from '../../utils/sound';
-import { ArrowLeft, Sparkles, AlertCircle, Hash, Delete, RotateCcw } from 'lucide-react';
+import { Sparkles, AlertCircle, Delete, RotateCcw, Hash } from 'lucide-react';
+import { GameShell } from '../ui/GameShell';
+import { Card } from '../ui/Card';
+import type { FeedbackState } from '../../types';
 
 interface DigitosGameProps {
   levelNumber: number;
@@ -15,42 +18,58 @@ export const DigitosGame: React.FC<DigitosGameProps> = ({
   onReturnToLevels,
 }) => {
   const currentLevelData: DigitosLevel =
-    DIGITOS_LEVELS[(levelNumber - 1) % DIGITOS_LEVELS.length] || DIGITOS_LEVELS[0];
+    DIGITOS_LEVELS[levelNumber - 1] ?? DIGITOS_LEVELS[0];
+  const meta = GAMES_META.digitos;
 
   const [phase, setPhase] = useState<'preview' | 'input'>('preview');
   const [countdown, setCountdown] = useState<number>(currentLevelData.previewSeconds);
   const [userInput, setUserInput] = useState<number[]>([]);
-  const [feedback, setFeedback] = useState<'idle' | 'correct' | 'error'>('idle');
-  const [feedbackMsg, setFeedbackMsg] = useState('');
+  const [feedback, setFeedback] = useState<FeedbackState | null>(null);
+  const won = feedback?.kind === 'success';
 
   // Expected reversed sequence
   const targetReversed = [...currentLevelData.sequence].reverse();
 
-  // Preview countdown timer
-  useEffect(() => {
+  /** Único dueño del intervalo: reintentar NUNCA duplica el tick (bug anterior). */
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const clearPreviewTimer = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
+
+  const startPreview = () => {
+    clearPreviewTimer();
     setPhase('preview');
     setCountdown(currentLevelData.previewSeconds);
     setUserInput([]);
-    setFeedback('idle');
-    setFeedbackMsg('');
+    setFeedback(null);
 
-    const interval = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          setPhase('input');
-          return 0;
-        }
+    let remaining = currentLevelData.previewSeconds;
+    intervalRef.current = setInterval(() => {
+      remaining -= 1;
+      if (remaining <= 0) {
+        clearPreviewTimer();
+        setCountdown(0);
+        setPhase('input');
+      } else {
         playCountdownTick();
-        return prev - 1;
-      });
+        setCountdown(remaining);
+      }
     }, 1000);
+  };
 
-    return () => clearInterval(interval);
+  // Preview countdown timer
+  useEffect(() => {
+    startPreview();
+    return () => clearPreviewTimer();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [levelNumber]);
 
   const handleKeyPress = (digit: number) => {
-    if (phase !== 'input' || feedback === 'correct') return;
+    if (phase !== 'input' || won) return;
     if (userInput.length >= targetReversed.length) return;
 
     playClick();
@@ -62,19 +81,17 @@ export const DigitosGame: React.FC<DigitosGameProps> = ({
       const isMatch = nextInput.every((num, i) => num === targetReversed[i]);
       if (isMatch) {
         playCorrect();
-        setFeedback('correct');
-        setFeedbackMsg('¡Perfecto! Invertiste la serie numérica con éxito.');
+        setFeedback({ text: '¡Perfecto! Invertiste la serie numérica con éxito.', kind: 'success' });
 
         setTimeout(() => {
           onWin(currentLevelData.points);
         }, 1200);
       } else {
         playError();
-        setFeedback('error');
-        setFeedbackMsg(`No coincide. La serie original era ${currentLevelData.sequence.join(' - ')}. ¡Inténtalo de nuevo!`);
+        setFeedback({ text: `No coincide. La serie original era ${currentLevelData.sequence.join(' - ')}. ¡Inténtalo de nuevo!`, kind: 'error' });
 
         setTimeout(() => {
-          setFeedback('idle');
+          setFeedback(current => (current?.kind === 'error' ? null : current));
           setUserInput([]);
         }, 2000);
       }
@@ -82,180 +99,142 @@ export const DigitosGame: React.FC<DigitosGameProps> = ({
   };
 
   const handleDelete = () => {
-    if (phase !== 'input' || feedback === 'correct') return;
+    if (phase !== 'input' || won) return;
     playClick();
     setUserInput(prev => prev.slice(0, -1));
-    setFeedback('idle');
+    setFeedback(null);
   };
 
   const handleRetryPreview = () => {
     playClick();
-    setPhase('preview');
-    setCountdown(currentLevelData.previewSeconds);
-    setUserInput([]);
-    setFeedback('idle');
-
-    const interval = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          setPhase('input');
-          return 0;
-        }
-        playCountdownTick();
-        return prev - 1;
-      });
-    }, 1000);
+    startPreview();
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] p-4 sm:p-6 bg-[#FAF8F5] flex flex-col justify-between">
-      <div className="max-w-md mx-auto w-full space-y-4">
-        {/* Top bar */}
-        <div className="flex items-center justify-between">
-          <button
-            onClick={() => {
-              playClick();
-              onReturnToLevels();
-            }}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-stone-50 text-stone-700 font-bold text-xs sm:text-sm shadow-xs border border-stone-200 active:scale-95 transition cursor-pointer"
-          >
-            <ArrowLeft className="w-4 h-4 text-stone-600" />
-            <span>Niveles</span>
-          </button>
-
-          <div className="flex items-center gap-2">
-            <span className="px-3.5 py-1.5 rounded-xl bg-stone-900 text-white font-extrabold text-xs shadow-2xs">
-              Nivel {levelNumber}
+    <GameShell
+      backId="btn_digitos_back_levels"
+      feedbackId="digitos_feedback_banner"
+      levelNumber={levelNumber}
+      totalLevels={getLevelCount('digitos')}
+      title="Dígitos Inversos"
+      area={meta.area}
+      areaLabel="Memoria de Trabajo: Dígitos Inversos"
+      instruction={
+        phase === 'preview'
+          ? 'Memoriza estos números en orden. Desaparecerán pronto.'
+          : '¡Ahora ingresa los números al revés! (Desde el último hasta el primero).'
+      }
+      feedback={feedback}
+      onBack={() => { playClick(); onReturnToLevels(); }}
+    >
+      {/* Display Stage */}
+      <Card className="p-6 sm:p-8 text-center min-h-[160px] flex flex-col items-center justify-center relative overflow-hidden">
+        {phase === 'preview' ? (
+          <div className="space-y-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-amber-300 flex items-center justify-center gap-2">
+              <Hash className="w-4 h-4" />
+              Memoriza los números (quedan {countdown}s):
             </span>
-          </div>
-        </div>
-
-        {/* Instruction box */}
-        <div className="bg-white rounded-2xl p-4 sm:p-5 border border-stone-200 shadow-xs flex items-start gap-3.5">
-          <div className="p-2.5 rounded-xl bg-amber-100 text-amber-900 shrink-0">
-            <Hash className="w-5 h-5" />
-          </div>
-          <div>
-            <h2 className="text-xs font-black uppercase tracking-wider text-stone-500">
-              Memoria de Trabajo: Dígitos Inversos
-            </h2>
-            <p className="text-xs sm:text-sm text-stone-700 font-medium mt-0.5">
-              {phase === 'preview'
-                ? 'Memoriza estos números en orden. Desaparecerán pronto.'
-                : '¡Ahora ingresa los números al revés! (Desde el último hasta el primero).'}
-            </p>
-          </div>
-        </div>
-
-        {/* Display Stage */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-xs text-center min-h-[160px] flex flex-col items-center justify-center relative overflow-hidden">
-          {phase === 'preview' ? (
-            <div className="space-y-3">
-              <span className="text-xs font-bold uppercase tracking-wider text-amber-800">
-                Memoriza los números (quedan {countdown}s):
-              </span>
-              <div className="flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
-                {currentLevelData.sequence.map((num, i) => (
-                  <div
-                    key={i}
-                    className="w-11 h-14 sm:w-14 sm:h-16 md:w-16 md:h-18 rounded-xl sm:rounded-2xl bg-stone-900 text-white font-black text-2xl sm:text-3xl md:text-4xl flex items-center justify-center shadow-xs animate-pulse"
-                  >
-                    {num}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-3 w-full">
-              <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
-                Escribe en orden INVERSO:
-              </span>
-              <div className="flex items-center justify-center gap-2 sm:gap-2.5 min-h-[56px] sm:min-h-[64px] flex-wrap">
-                {targetReversed.map((_, i) => {
-                  const digitEntered = userInput[i];
-                  const hasDigit = digitEntered !== undefined;
-
-                  return (
-                    <div
-                      key={i}
-                      className={`w-10 h-13 sm:w-13 sm:h-16 rounded-xl sm:rounded-2xl border flex items-center justify-center font-black text-xl sm:text-2xl transition-all ${
-                        hasDigit
-                          ? 'bg-amber-50 border-2 border-amber-500 text-amber-950 shadow-2xs'
-                          : 'bg-stone-50 border-dashed border-stone-300 text-stone-400'
-                      }`}
-                    >
-                      {hasDigit ? digitEntered : '?'}
-                    </div>
-                  );
-                })}
-              </div>
-
-              {feedback !== 'idle' && (
+            <div className="flex items-center justify-center gap-2 sm:gap-3 flex-wrap" role="status" aria-label={`Memoriza: ${currentLevelData.sequence.join(', ')}`}>
+              {currentLevelData.sequence.map((num, i) => (
                 <div
-                  className={`mt-2 p-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 ${
-                    feedback === 'correct'
-                      ? 'bg-emerald-50 text-emerald-900 border border-emerald-300'
-                      : 'bg-rose-50 text-rose-900 border border-rose-300'
-                  }`}
+                  key={i}
+                  className={`anim-pop-in stagger-${(i % 5) + 1} w-11 h-14 sm:w-14 sm:h-16 rounded-2xl bg-gradient-to-b from-violet-300 to-fuchsia-500 text-white font-black text-2xl sm:text-3xl flex items-center justify-center shadow-lg shadow-fuchsia-500/25 border border-white/30`}
                 >
-                  {feedback === 'correct' ? (
-                    <Sparkles className="w-4 h-4 text-emerald-600 shrink-0" />
-                  ) : (
-                    <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
-                  )}
-                  <span>{feedbackMsg}</span>
+                  {num}
                 </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Keypad during input phase */}
-        {phase === 'input' && (
-          <div className="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs space-y-2">
-            <div className="grid grid-cols-3 gap-2">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((digit) => (
-                <button
-                  key={digit}
-                  disabled={feedback === 'correct'}
-                  onClick={() => handleKeyPress(digit)}
-                  className="py-3 sm:py-3.5 rounded-xl bg-stone-50 hover:bg-amber-50 active:bg-amber-100 border border-stone-200 text-stone-900 font-black text-2xl shadow-2xs active:scale-95 transition cursor-pointer"
-                >
-                  {digit}
-                </button>
               ))}
             </div>
+          </div>
+        ) : (
+          <div className="space-y-3 w-full">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              Escribe en orden INVERSO:
+            </span>
+            <div className="flex items-center justify-center gap-2 sm:gap-2.5 min-h-[56px] sm:min-h-[64px] flex-wrap">
+              {targetReversed.map((_, i) => {
+                const digitEntered = userInput[i];
+                const hasDigit = digitEntered !== undefined;
 
-            <div className="grid grid-cols-3 gap-2">
-              <button
-                onClick={handleRetryPreview}
-                className="py-3 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs flex flex-col items-center justify-center shadow-2xs active:scale-95 transition cursor-pointer"
-              >
-                <RotateCcw className="w-4 h-4 mb-0.5" />
-                <span>Ver de nuevo</span>
-              </button>
-
-              <button
-                disabled={feedback === 'correct'}
-                onClick={() => handleKeyPress(0)}
-                className="py-3 sm:py-3.5 rounded-xl bg-stone-50 hover:bg-amber-50 active:bg-amber-100 border border-stone-200 text-stone-900 font-black text-2xl shadow-2xs active:scale-95 transition cursor-pointer"
-              >
-                0
-              </button>
-
-              <button
-                disabled={userInput.length === 0 || feedback === 'correct'}
-                onClick={handleDelete}
-                className="py-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs flex flex-col items-center justify-center shadow-2xs active:scale-95 transition cursor-pointer"
-              >
-                <Delete className="w-4 h-4 mb-0.5" />
-                <span>Borrar</span>
-              </button>
+                return (
+                  <div
+                    key={i}
+                    className={`w-10 h-12 sm:w-12 sm:h-16 rounded-2xl border flex items-center justify-center font-black text-xl sm:text-2xl transition-all ${
+                      hasDigit
+                        ? 'bg-amber-400/15 border-2 border-amber-300 text-amber-100 shadow-[0_0_14px_rgba(251,191,36,0.2)]'
+                        : 'bg-white/[0.04] border-dashed border-white/20 text-slate-600'
+                    }`}
+                  >
+                    {hasDigit ? digitEntered : '?'}
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
-      </div>
-    </div>
+      </Card>
+
+      {/* Keypad during input phase */}
+      {phase === 'input' && (
+        <Card className="p-4 space-y-2">
+          <div className="grid grid-cols-3 gap-2">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((digit) => (
+              <button
+                key={digit}
+                id={`digitos_key_${digit}`}
+                disabled={won}
+                onClick={() => handleKeyPress(digit)}
+                aria-label={`Número ${digit}`}
+                className="py-3 sm:py-3.5 rounded-2xl bg-white/10 hover:bg-amber-400/25 active:bg-amber-400/35 border border-white/15 text-slate-50 font-black text-2xl active:scale-95 transition cursor-pointer disabled:cursor-default"
+              >
+                {digit}
+              </button>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-3 gap-2">
+            <button
+              id="btn_digitos_retry_preview"
+              onClick={handleRetryPreview}
+              className="py-3 rounded-2xl bg-white/10 hover:bg-white/15 text-slate-200 font-bold text-xs flex flex-col items-center justify-center active:scale-95 transition cursor-pointer border border-white/15"
+            >
+              <RotateCcw className="w-4 h-4 mb-0.5" />
+              <span>Ver de nuevo</span>
+            </button>
+
+            <button
+              id="digitos_key_0"
+              disabled={won}
+              onClick={() => handleKeyPress(0)}
+              aria-label="Número 0"
+              className="py-3 sm:py-3.5 rounded-2xl bg-white/10 hover:bg-amber-400/25 active:bg-amber-400/35 border border-white/15 text-slate-50 font-black text-2xl active:scale-95 transition cursor-pointer disabled:cursor-default"
+            >
+              0
+            </button>
+
+            <button
+              id="btn_digitos_delete"
+              disabled={userInput.length === 0 || won}
+              onClick={handleDelete}
+              className="py-3 rounded-2xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-200 font-bold text-xs flex flex-col items-center justify-center active:scale-95 transition cursor-pointer border border-rose-400/30 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <Delete className="w-4 h-4 mb-0.5" />
+              <span>Borrar</span>
+            </button>
+          </div>
+        </Card>
+      )}
+
+      {/* Feedback icon row (el banner lo pinta GameShell) */}
+      {feedback && (
+        <div className="flex justify-center" aria-hidden="true">
+          {feedback.kind === 'success' ? (
+            <Sparkles className="w-6 h-6 text-emerald-300 anim-pop-in" />
+          ) : (
+            feedback.kind === 'error' && <AlertCircle className="w-6 h-6 text-rose-300 anim-pop-in" />
+          )}
+        </div>
+      )}
+    </GameShell>
   );
 };

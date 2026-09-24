@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { Trophy, Star, ArrowRight, RotateCcw, ListFilter } from 'lucide-react';
+import { ArrowRight, RotateCcw, LayoutGrid, Sparkles } from 'lucide-react';
 import { playClick, playVictory } from '../utils/sound';
+import { Modal } from './ui/Modal';
+import { Mascot } from './ui/Mascot';
+import { Stars } from './ui/Progress';
 
 interface VictoriaModalProps {
   isOpen: boolean;
@@ -27,10 +30,10 @@ export const VictoriaModal: React.FC<VictoriaModalProps> = ({
       playVictory();
       try {
         confetti({
-          particleCount: 80,
-          spread: 70,
+          particleCount: 90,
+          spread: 75,
           origin: { y: 0.6 },
-          colors: ['#f59e0b', '#ec4899', '#3b82f6', '#10b981', '#fbbf24']
+          colors: ['#fbbf24', '#2dd4bf', '#a78bfa', '#fb7185', '#f97316'],
         });
       } catch {
         // Safe fallback
@@ -38,38 +41,26 @@ export const VictoriaModal: React.FC<VictoriaModalProps> = ({
     }
   }, [isOpen]);
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-xs animate-in zoom-in-95 duration-200">
-      <div 
-        id="victoria_modal_card"
-        className="w-full max-w-sm bg-white border border-stone-200 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.18)] p-6 sm:p-8 text-center relative overflow-hidden"
-      >
-        {/* Trophy icon */}
-        <div className="relative mx-auto w-20 h-20 mb-3 flex items-center justify-center">
-          <div className="w-18 h-18 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center shadow-xs">
-            <Trophy className="w-9 h-9 text-amber-600" />
-          </div>
+    <Modal
+      id="victoria_modal_card"
+      open={isOpen}
+      onClose={onReturnToLevels}
+      title="¡VICTORIA!"
+      subtitle={`¡Completaste el Nivel ${levelNumber}! Nebo está orgulloso de ti.`}
+      icon={<Mascot mood="cheer" className="w-10 h-10" />}
+      closeId="btn_victoria_close"
+    >
+      <div className="px-6 sm:px-8 pb-6 sm:pb-8 text-center overflow-y-auto">
+        <div className="anim-floaty mx-auto w-fit mb-3">
+          <Mascot mood="cheer" className="w-24 h-24 drop-shadow-[0_0_24px_rgba(251,191,36,0.5)]" />
         </div>
 
-        {/* 3 Golden Stars */}
-        <div className="flex justify-center gap-2 mb-2">
-          <Star className="w-6 h-6 text-amber-400 fill-amber-400 drop-shadow-xs" />
-          <Star className="w-8 h-8 text-amber-500 fill-amber-500 -mt-1 drop-shadow-xs" />
-          <Star className="w-6 h-6 text-amber-400 fill-amber-400 drop-shadow-xs" />
-        </div>
-
-        {/* Title */}
-        <h2 className="text-2xl sm:text-3xl font-black text-stone-900 tracking-tight mb-1">
-          ¡VICTORIA!
-        </h2>
-        <p className="text-stone-600 font-bold text-sm mb-3">
-          ¡Completaste el Nivel {levelNumber}!
-        </p>
+        <Stars count={3} className="mb-3" />
 
         {/* Points box */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 font-black text-base mb-6 shadow-xs">
+        <div className="inline-flex items-center gap-2 px-5 py-2 rounded-2xl bg-amber-400/10 border border-amber-400/40 text-amber-300 font-black text-base mb-6 shadow-[0_0_20px_rgba(251,191,36,0.2)]">
+          <Sparkles className="w-4 h-4" />
           <span>+{pointsEarned} Puntos Ganados</span>
         </div>
 
@@ -79,7 +70,7 @@ export const VictoriaModal: React.FC<VictoriaModalProps> = ({
             <button
               id="btn_victoria_next_level"
               onClick={() => { playClick(); onNextLevel(); }}
-              className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-base shadow-xs active:scale-[0.98] transition cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-2xl bg-gradient-to-b from-amber-300 to-amber-500 hover:from-amber-200 hover:to-amber-400 text-indigo-950 font-black text-base shadow-[0_6px_20px_rgba(251,191,36,0.35)] active:scale-[0.98] transition cursor-pointer border border-amber-200/60"
             >
               <span>Siguiente Nivel</span>
               <ArrowRight className="w-4 h-4" />
@@ -90,23 +81,23 @@ export const VictoriaModal: React.FC<VictoriaModalProps> = ({
             <button
               id="btn_victoria_repeat"
               onClick={() => { playClick(); onRepeatLevel(); }}
-              className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold text-sm shadow-xs active:scale-[0.98] transition border border-stone-200 cursor-pointer"
+              className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-2xl bg-white/10 hover:bg-white/15 text-slate-100 font-bold text-sm active:scale-[0.98] transition border border-white/15 cursor-pointer"
             >
-              <RotateCcw className="w-4 h-4 text-stone-600" />
+              <RotateCcw className="w-4 h-4 text-slate-300" />
               <span>Repetir</span>
             </button>
 
             <button
               id="btn_victoria_to_levels"
               onClick={() => { playClick(); onReturnToLevels(); }}
-              className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-sm shadow-xs active:scale-[0.98] transition cursor-pointer"
+              className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-2xl bg-gradient-to-r from-violet-400 to-fuchsia-500 hover:brightness-110 text-white font-bold text-sm shadow-lg shadow-violet-500/30 active:scale-[0.98] transition cursor-pointer border border-white/20"
             >
-              <ListFilter className="w-4 h-4" />
+              <LayoutGrid className="w-4 h-4" />
               <span>Niveles</span>
             </button>
           </div>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };

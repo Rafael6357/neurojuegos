@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import { Player, ScreenType } from '../../types';
-import { createPlayer, getTotalScore, setActivePlayerId } from '../../services/storage';
-import { UserPlus, Check, Trophy, ArrowLeft, Star, Sparkles, Smile } from 'lucide-react';
+import { createPlayer, getTotalScore, setActivePlayerId, MAX_PLAYER_AGE, MIN_PLAYER_AGE } from '../../services/storage';
+import { GAME_ORDER, GAMES_META, getLevelCount } from '../../data/gamesData';
+import { getGameLevel, getGameScore } from '../../services/storage';
+import { UserPlus, Check, Trophy, ArrowLeft, Star, Sparkles, Smile, ShieldCheck, Rocket } from 'lucide-react';
 import { playClick, playCorrect, playError } from '../../utils/sound';
+import { CosmicBackground } from '../ui/CosmicBackground';
+import { Card } from '../ui/Card';
+import { Badge } from '../ui/Badge';
+import { Avatar } from '../ui/Avatar';
 
 interface GestionJugadoresScreenProps {
   players: Player[];
@@ -31,9 +37,9 @@ export const GestionJugadoresScreen: React.FC<GestionJugadoresScreenProps> = ({
       return;
     }
     const ageNum = Number(edad);
-    if (!ageNum || ageNum < 1 || ageNum > 16) {
+    if (!ageNum || ageNum < MIN_PLAYER_AGE || ageNum > MAX_PLAYER_AGE) {
       playError();
-      setMessage({ text: 'Por favor ingresa una edad válida (1 a 16 años).', type: 'error' });
+      setMessage({ text: `Por favor ingresa una edad válida (${MIN_PLAYER_AGE} a ${MAX_PLAYER_AGE} años).`, type: 'error' });
       return;
     }
 
@@ -53,225 +59,245 @@ export const GestionJugadoresScreen: React.FC<GestionJugadoresScreenProps> = ({
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] p-4 sm:p-8 bg-[#131722] text-slate-100">
-      <div className="max-w-4xl mx-auto space-y-6">
-        {/* Navigation & Header */}
-        <div className="flex items-center justify-between">
+    <CosmicBackground>
+      <div className="max-w-2xl mx-auto space-y-5 p-4 sm:p-6">
+        {/* Header */}
+        <div className="text-center">
+          <Badge tone="violet" className="mb-2">Tripulación de la Nave</Badge>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-50 tracking-tight">
+            Gestión de Jugadores
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-400 font-semibold mt-1">
+            Astronautas y Jugadores • {players.length} {players.length === 1 ? 'perfil' : 'perfiles'} a bordo
+          </p>
+        </div>
+
+        <div className="flex items-center justify-between gap-2">
           <button
             id="btn_gestion_volver_inicio"
             onClick={() => { playClick(); onNavigate('inicio'); }}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#1C212E] hover:bg-[#252B3B] text-slate-200 font-bold text-xs sm:text-sm shadow-xs border border-slate-700 active:scale-95 transition cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/10 hover:bg-white/15 text-slate-100 font-bold text-xs sm:text-sm border border-white/15 active:scale-95 transition cursor-pointer"
           >
-            <ArrowLeft className="w-4 h-4 text-slate-400" />
-            <span>Volver a Inicio</span>
+            <ArrowLeft className="w-4 h-4 text-slate-300" />
+            <span>Volver a la Misión Principal</span>
           </button>
 
           <button
             id="btn_gestion_ranking"
             onClick={() => { playClick(); onOpenRanking(); }}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-xs sm:text-sm shadow-xs active:scale-95 transition cursor-pointer border border-amber-500"
+            className="btn-chunky-amber flex items-center gap-2 px-4 py-2 font-extrabold text-xs sm:text-sm cursor-pointer"
           >
-            <Trophy className="w-4 h-4 text-amber-200" />
+            <Trophy className="w-4 h-4" />
             <span>Ver Ranking</span>
           </button>
-        </div>
-
-        <div className="text-center">
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-100 tracking-tight">
-            Gestión de Jugadores
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-400 font-medium mt-1">
-            Registra nuevos perfiles y selecciona al jugador activo
-          </p>
         </div>
 
         {/* Message banner */}
         {message && (
           <div
             id="gestion_feedback_message"
-            className={`p-3 rounded-2xl text-xs sm:text-sm font-bold text-center border shadow-2xs transition ${
+            role="status"
+            className={`anim-pop-in p-3 rounded-2xl text-xs sm:text-sm font-bold text-center border ${
               message.type === 'success'
-                ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-200'
-                : 'bg-rose-950/60 border-rose-500/40 text-rose-200'
+                ? 'bg-emerald-400/10 border-emerald-400/40 text-emerald-200'
+                : 'bg-rose-400/10 border-rose-400/40 text-rose-200'
             }`}
           >
             {message.text}
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {/* Left Column: Register New Player Form */}
-          <div className="bg-[#1C212E] border border-slate-700/80 rounded-3xl p-5 sm:p-6 shadow-xs">
-            <div className="flex items-center gap-2 text-slate-100 font-extrabold text-base mb-4">
-              <div className="p-2 rounded-xl bg-amber-500/15 text-amber-400 border border-amber-500/30">
-                <UserPlus className="w-4 h-4" />
+        {/* Active player summary */}
+        {activePlayer && (
+          <Card className="p-5 flex flex-col gap-3">
+            <span className="text-[11px] font-extrabold uppercase tracking-wider text-teal-200">
+              Astronauta en misión
+            </span>
+            <div className="flex items-center gap-3.5">
+              <Avatar name={activePlayer.nombre} color={activePlayer.avatarColor} size="xl" />
+              <div className="min-w-0 flex-1">
+                <h3 className="text-xl font-black text-slate-50 truncate">
+                  {activePlayer.nombre}
+                </h3>
+                <p className="text-xs font-semibold text-slate-400">
+                  {activePlayer.edad} años • ★ {getTotalScore(activePlayer)} pts acumulados
+                </p>
               </div>
-              <h2>Registrar Nuevo Jugador</h2>
-            </div>
-
-            <form onSubmit={handleRegister} className="space-y-4">
-              <div>
-                <label htmlFor="input_player_name" className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                  Nombre del Jugador
-                </label>
-                <div className="relative">
-                  <input
-                    id="input_player_name"
-                    type="text"
-                    value={nombre}
-                    onChange={(e) => setNombre(e.target.value)}
-                    placeholder="Ej. Mateo, Sofía, Lucas..."
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#23293A] border border-slate-700 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/30 outline-none text-slate-100 font-bold placeholder:text-slate-500 transition text-sm"
-                    maxLength={24}
-                  />
-                  <Smile className="w-4 h-4 text-slate-500 absolute right-3.5 top-3 pointer-events-none" />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="input_player_age" className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                  Edad del Jugador (Años)
-                </label>
-                <input
-                  id="input_player_age"
-                  type="number"
-                  min="1"
-                  max="16"
-                  value={edad}
-                  onChange={(e) => setEdad(e.target.value === '' ? '' : Number(e.target.value))}
-                  placeholder="5"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#23293A] border border-slate-700 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/30 outline-none text-slate-100 font-bold placeholder:text-slate-500 transition text-sm"
-                />
-              </div>
-
-              <button
-                id="btn_submit_registrar_jugador"
-                type="submit"
-                className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-amber-600 hover:bg-amber-500 active:scale-[0.98] text-white font-extrabold text-sm shadow-xs transition cursor-pointer border border-amber-500"
-              >
-                <Sparkles className="w-4 h-4 text-amber-200" />
-                <span>Registrar Jugador</span>
-              </button>
-            </form>
-          </div>
-
-          {/* Right Column: Active Player Summary */}
-          {activePlayer && (
-            <div className="bg-[#1C212E] border border-slate-700/80 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between">
-              <div>
-                <span className="text-[11px] font-extrabold uppercase tracking-wider text-amber-400 block mb-2">
-                  Jugador Seleccionado
-                </span>
-                <div className="flex items-center gap-3.5 mb-4">
-                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-tr ${activePlayer.avatarColor || 'from-amber-400 to-orange-500'} flex items-center justify-center text-white font-black text-xl shadow-xs ring-2 ring-slate-700`}>
-                    {activePlayer.nombre.charAt(0).toUpperCase()}
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-black text-slate-100">
-                      {activePlayer.nombre}
-                    </h3>
-                    <p className="text-xs font-semibold text-slate-400">
-                      {activePlayer.edad} años
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-3 bg-[#23293A] rounded-xl border border-slate-700 shadow-2xs mb-3">
-                  <div className="flex items-center justify-between text-amber-400 font-extrabold text-xs">
-                    <span>Puntuación Total Acumulada</span>
-                    <div className="flex items-center gap-1 text-sm text-amber-400 font-black">
-                      <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                      <span>{getTotalScore(activePlayer)} pts</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Breakdown per game */}
-                <div className="space-y-1 text-xs text-slate-300 font-medium bg-[#171C28] p-3 rounded-xl border border-slate-800">
-                  <div className="flex justify-between py-0.5 border-b border-slate-800">
-                    <span>Frases Verdadero o Falso:</span>
-                    <span className="font-bold text-amber-400">{activePlayer.puntuacionFrasesVoF} pts (Nivel {activePlayer.nivelFrasesVoF})</span>
-                  </div>
-                  <div className="flex justify-between py-0.5 border-b border-slate-800">
-                    <span>Identifica:</span>
-                    <span className="font-bold text-amber-400">{activePlayer.puntuacionIdentifica} pts (Nivel {activePlayer.nivelIdentifica})</span>
-                  </div>
-                  <div className="flex justify-between py-0.5 border-b border-slate-800">
-                    <span>Patrones:</span>
-                    <span className="font-bold text-amber-400">{activePlayer.puntuacionPatrones} pts (Nivel {activePlayer.nivelPatrones})</span>
-                  </div>
-                  <div className="flex justify-between py-0.5 border-b border-slate-800">
-                    <span>Adivina la Palabra:</span>
-                    <span className="font-bold text-amber-400">{activePlayer.puntuacionCadenaNum} pts (Nivel {activePlayer.nivelAdivina})</span>
-                  </div>
-                  <div className="flex justify-between py-0.5">
-                    <span>Recuerda:</span>
-                    <span className="font-bold text-amber-400">{activePlayer.puntuacionMemo} pts (Nivel {activePlayer.nivelRecuerda})</span>
-                  </div>
-                </div>
-              </div>
-
               <button
                 id="btn_jugar_con_este_perfil"
                 onClick={() => { playClick(); onNavigate('panel_minijuegos'); }}
-                className="mt-4 w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm shadow-xs active:scale-[0.98] transition text-center cursor-pointer border border-emerald-500"
+                className="btn-chunky-teal shrink-0 px-5 py-2.5 font-black text-xs sm:text-sm cursor-pointer"
               >
                 JUGAR CON ESTE PERFIL
               </button>
             </div>
-          )}
-        </div>
 
-        {/* Players List to Switch */}
-        <div className="bg-[#1C212E] border border-slate-700/80 rounded-3xl p-5 sm:p-6 shadow-xs">
-          <h2 className="text-base font-black text-slate-100 mb-1">
-            Lista de Jugadores ({players.length})
+            {/* Breakdown per game: los 10 */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs font-semibold bg-black/30 p-3 rounded-2xl border border-white/10 max-h-56 overflow-y-auto">
+              {GAME_ORDER.map(g => {
+                const meta = GAMES_META[g];
+                return (
+                  <div key={g} className="flex justify-between items-center gap-2 py-1 px-2 rounded-xl bg-white/[0.03]">
+                    <span className="truncate text-slate-300">
+                      <span aria-hidden="true">{meta.emoji} </span>{meta.title}
+                    </span>
+                    <span className="font-bold text-teal-200 shrink-0">
+                      {getGameScore(activePlayer, g)} pts • Nv. {Math.min(getGameLevel(activePlayer, g), getLevelCount(g))}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+        )}
+
+        {/* Players List */}
+        <Card className="p-5">
+          <h2 className="text-base font-black text-slate-50 mb-1">
+            Tripulación Registrada ({players.length})
           </h2>
-          <p className="text-xs text-slate-400 font-medium mb-3.5">
-            Toca a un jugador para seleccionarlo como jugador activo
+          <p className="text-xs text-slate-400 font-semibold mb-3.5">
+            Toca «Elegir» para poner a un astronauta al mando
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+          <div className="flex flex-col gap-2.5">
             {players.map((p) => {
               const isSelected = activePlayer?.id === p.id;
               const total = getTotalScore(p);
 
               return (
-                <button
+                <div
                   key={p.id}
                   id={`btn_select_player_${p.id}`}
-                  onClick={() => handleSelectPlayer(p.id)}
-                  className={`p-3 rounded-2xl border text-left flex items-center justify-between gap-3 transition active:scale-95 cursor-pointer ${
+                  className={`p-3 rounded-2xl border flex items-center justify-between gap-3 transition ${
                     isSelected
-                      ? 'bg-amber-500/15 border-amber-500/50 shadow-xs'
-                      : 'bg-[#23293A] border-slate-700 hover:border-slate-600 hover:bg-[#2B3245] shadow-2xs'
+                      ? 'bg-teal-400/10 border-teal-300/50 shadow-[0_0_16px_rgba(45,212,191,0.15)]'
+                      : 'bg-white/[0.04] border-white/10'
                   }`}
                 >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div className={`w-9 h-9 rounded-xl bg-gradient-to-tr ${p.avatarColor || 'from-amber-400 to-orange-500'} flex items-center justify-center text-white font-black text-sm shadow-2xs shrink-0`}>
-                      {p.nombre.charAt(0).toUpperCase()}
-                    </div>
-                    <div className="min-w-0">
-                      <h4 className="font-extrabold text-slate-100 text-xs sm:text-sm truncate">
+                  <button
+                    onClick={() => handleSelectPlayer(p.id)}
+                    aria-pressed={isSelected}
+                    className="flex items-center gap-2.5 min-w-0 flex-1 text-left cursor-pointer"
+                  >
+                    <Avatar name={p.nombre} color={p.avatarColor} size="md" />
+                    <span className="min-w-0">
+                      <span className="font-extrabold text-slate-50 text-sm truncate block">
                         {p.nombre}
-                      </h4>
+                      </span>
                       <span className="text-[11px] text-slate-400 font-semibold block truncate">
                         {p.edad} años • {total} pts
                       </span>
-                    </div>
-                  </div>
+                    </span>
+                  </button>
 
-                  {isSelected && (
-                    <div className="p-1 rounded-full bg-emerald-500 text-white shadow-2xs shrink-0">
-                      <Check className="w-3.5 h-3.5 stroke-[3]" />
-                    </div>
+                  {isSelected ? (
+                    <span className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-emerald-500/20 text-emerald-300 font-black text-[11px] border border-emerald-400/40 shrink-0">
+                      <Check className="w-3.5 h-3.5 stroke-[3]" /> Al mando
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => handleSelectPlayer(p.id)}
+                      className="px-4 py-1.5 rounded-full bg-white/10 hover:bg-teal-400/25 text-slate-100 hover:text-teal-100 font-black text-[11px] border border-white/15 active:scale-95 transition cursor-pointer shrink-0"
+                    >
+                      Elegir
+                    </button>
                   )}
-                </button>
+                </div>
               );
             })}
           </div>
+        </Card>
+
+        {/* Register form */}
+        <Card className="p-5 sm:p-6 relative overflow-hidden">
+          <div className="flex items-start gap-4">
+            <img
+              src="/assets/avatar_astronauta.jpg"
+              alt=""
+              aria-hidden="true"
+              className="hidden sm:block w-24 h-24 rounded-3xl object-cover border border-white/15 shadow-lg shrink-0"
+            />
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 text-slate-50 font-extrabold text-base mb-1">
+                <span className="p-2 rounded-2xl bg-teal-400/10 text-teal-200 border border-teal-400/30">
+                  <UserPlus className="w-4 h-4" />
+                </span>
+                <h2>Nuevo Explorador</h2>
+              </div>
+              <p className="text-xs text-slate-400 font-semibold mb-4">¿Cómo se llama el pequeño explorador?</p>
+
+              <form onSubmit={handleRegister} className="space-y-4">
+                <div>
+                  <label htmlFor="input_player_name" className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                    Nombre del Jugador
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="input_player_name"
+                      type="text"
+                      value={nombre}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNombre(e.target.value)}
+                      placeholder="Ej. Mateo, Sofía, Lucas..."
+                      className="w-full px-4 py-3 rounded-2xl bg-black/30 border border-white/15 focus:border-teal-300 focus:ring-2 focus:ring-teal-300/30 outline-none text-slate-50 font-bold placeholder:text-slate-500 transition text-sm"
+                      maxLength={24}
+                    />
+                    <Smile className="w-4 h-4 text-slate-500 absolute right-3.5 top-3.5 pointer-events-none" />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="input_player_age" className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                    Edad del explorador (1 a 12 años)
+                  </label>
+                  <input
+                    id="input_player_age"
+                    type="number"
+                    min={MIN_PLAYER_AGE}
+                    max={MAX_PLAYER_AGE}
+                    value={edad}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEdad(e.target.value === '' ? '' : Number(e.target.value))}
+                    placeholder="5"
+                    className="w-full px-4 py-3 rounded-2xl bg-black/30 border border-white/15 focus:border-teal-300 focus:ring-2 focus:ring-teal-300/30 outline-none text-slate-50 font-bold placeholder:text-slate-500 transition text-sm"
+                  />
+                </div>
+
+                <button
+                  id="btn_submit_registrar_jugador"
+                  type="submit"
+                  className="btn-chunky-teal w-full flex items-center justify-center gap-2 py-3.5 px-5 font-black text-sm cursor-pointer"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  <span>Registrar Jugador</span>
+                </button>
+              </form>
+            </div>
+          </div>
+        </Card>
+
+        {/* Safe banner */}
+        <div className="w-full rounded-2xl bg-black/30 p-4 flex items-center gap-3 border border-white/10">
+          <span className="w-10 h-10 rounded-full bg-teal-400/10 flex items-center justify-center shrink-0 text-teal-200" aria-hidden="true">
+            <ShieldCheck className="w-5 h-5" />
+          </span>
+          <div>
+            <span className="text-[11px] font-black uppercase tracking-wider text-teal-200 block">100% Seguro y Privado</span>
+            <p className="text-xs text-slate-400 font-semibold leading-snug">
+              Los perfiles se guardan solo en este dispositivo. Sin cuentas, sin anuncios.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex justify-center">
+          <button
+            id="btn_gestion_jugar"
+            onClick={() => { playClick(); onNavigate('panel_minijuegos'); }}
+            className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-teal-200 hover:text-teal-100 transition cursor-pointer"
+          >
+            <Rocket className="w-4 h-4" /> Volver a la Misión Principal
+          </button>
         </div>
       </div>
-    </div>
+    </CosmicBackground>
   );
 };

@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { PAREJAS_LEVELS, ParejasLevel } from '../../data/gamesData';
+import { PAREJAS_LEVELS, ParejasLevel, GAMES_META, getLevelCount } from '../../data/gamesData';
 import { playClick, playCorrect, playError, playFlip } from '../../utils/sound';
-import { ArrowLeft, Sparkles, Brain, Trophy } from 'lucide-react';
+import { Sparkles, Brain } from 'lucide-react';
+import { GameShell } from '../ui/GameShell';
+import { Card } from '../ui/Card';
+import type { FeedbackState } from '../../types';
 
 interface ParejasGameProps {
   levelNumber: number;
@@ -23,32 +26,22 @@ export const ParejasGame: React.FC<ParejasGameProps> = ({
   onReturnToLevels,
 }) => {
   const currentLevelData: ParejasLevel =
-    PAREJAS_LEVELS[(levelNumber - 1) % PAREJAS_LEVELS.length] || PAREJAS_LEVELS[0];
+    PAREJAS_LEVELS[levelNumber - 1] ?? PAREJAS_LEVELS[0];
+  const meta = GAMES_META.parejas;
 
   const [cards, setCards] = useState<CardItem[]>([]);
   const [flippedUids, setFlippedUids] = useState<string[]>([]);
   const [matchedPairIds, setMatchedPairIds] = useState<string[]>([]);
   const [moves, setMoves] = useState<number>(0);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [feedback, setFeedback] = useState<FeedbackState | null>(null);
 
   // Initialize and shuffle cards
   useEffect(() => {
     const deck: CardItem[] = [];
     currentLevelData.cards.forEach((card, idx) => {
-      deck.push({
-        uid: `${card.pairId}-a-${idx}`,
-        pairId: card.pairId,
-        label: card.label,
-        emoji: card.emoji,
-        color: card.color,
-      });
-      deck.push({
-        uid: `${card.pairId}-b-${idx}`,
-        pairId: card.pairId,
-        label: card.label,
-        emoji: card.emoji,
-        color: card.color,
-      });
+      deck.push({ uid: `${card.pairId}-a-${idx}`, pairId: card.pairId, label: card.label, emoji: card.emoji, color: card.color });
+      deck.push({ uid: `${card.pairId}-b-${idx}`, pairId: card.pairId, label: card.label, emoji: card.emoji, color: card.color });
     });
 
     // Shuffle deck
@@ -62,7 +55,8 @@ export const ParejasGame: React.FC<ParejasGameProps> = ({
     setMatchedPairIds([]);
     setMoves(0);
     setIsProcessing(false);
-  }, [levelNumber]);
+    setFeedback({ text: 'Toca las cartas para voltearlas y encuentra todas las parejas iguales.', kind: 'info' });
+  }, [levelNumber, currentLevelData.cards]);
 
   const handleCardClick = (card: CardItem) => {
     if (isProcessing) return;
@@ -90,9 +84,10 @@ export const ParejasGame: React.FC<ParejasGameProps> = ({
           setIsProcessing(false);
 
           if (nextMatched.length === currentLevelData.pairsCount) {
+            setFeedback({ text: `¡Increíble! Encontraste las ${currentLevelData.pairsCount} parejas en ${moves + 1} movimientos.`, kind: 'success' });
             setTimeout(() => {
               onWin(currentLevelData.points);
-            }, 600);
+            }, 900);
           }
         }, 600);
       } else {
@@ -108,57 +103,36 @@ export const ParejasGame: React.FC<ParejasGameProps> = ({
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] p-4 sm:p-6 bg-[#FAF8F5] flex flex-col justify-between">
-      <div className="max-w-3xl mx-auto w-full space-y-4">
-        {/* Top bar */}
-        <div className="flex items-center justify-between">
-          <button
-            onClick={() => {
-              playClick();
-              onReturnToLevels();
-            }}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-stone-50 text-stone-700 font-bold text-xs sm:text-sm shadow-xs border border-stone-200 active:scale-95 transition cursor-pointer"
-          >
-            <ArrowLeft className="w-4 h-4 text-stone-600" />
-            <span>Niveles</span>
-          </button>
+    <GameShell
+      backId="btn_parejas_back_levels"
+      feedbackId="parejas_feedback_banner"
+      levelNumber={levelNumber}
+      totalLevels={getLevelCount('parejas')}
+      title="Parejas de Cartas"
+      area={meta.area}
+      areaLabel="Memoria Visual: Parejas de Cartas"
+      instruction={`Encuentra las ${currentLevelData.pairsCount} parejas iguales`}
+      feedback={feedback}
+      onBack={() => { playClick(); onReturnToLevels(); }}
+    >
+      {/* Scoreboard */}
+      <div className="flex items-center justify-center gap-2 flex-wrap">
+        <span id="parejas_moves" className="px-3.5 py-1.5 rounded-xl bg-white/10 border border-white/15 text-slate-100 text-xs font-bold">
+          Movimientos: {moves}
+        </span>
+        <span className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-300 to-amber-500 text-indigo-950 text-xs font-black">
+          {matchedPairIds.length} / {currentLevelData.pairsCount} Parejas
+        </span>
+      </div>
 
-          <div className="flex items-center gap-2">
-            <span className="px-3 py-1 rounded-xl bg-white border border-stone-200 text-stone-700 text-xs font-bold shadow-2xs">
-              Movimientos: {moves}
-            </span>
-            <span className="px-3 py-1 rounded-xl bg-amber-500 text-white text-xs font-extrabold shadow-2xs flex items-center gap-1">
-              <Trophy className="w-3.5 h-3.5" />
-              <span>{matchedPairIds.length} / {currentLevelData.pairsCount} Parejas</span>
-            </span>
-            <span className="px-3.5 py-1 rounded-xl bg-stone-900 text-white text-xs font-extrabold shadow-2xs">
-              Nivel {levelNumber}
-            </span>
-          </div>
-        </div>
-
-        {/* Instruction box */}
-        <div className="bg-white rounded-2xl p-4 sm:p-5 border border-stone-200 shadow-xs flex items-start gap-3.5">
-          <div className="p-2.5 rounded-xl bg-amber-100 text-amber-900 shrink-0">
-            <Brain className="w-5 h-5" />
-          </div>
-          <div>
-            <h2 className="text-xs font-black uppercase tracking-wider text-stone-500">
-              Memoria Visual: Parejas de Cartas
-            </h2>
-            <p className="text-xs sm:text-sm text-stone-700 font-medium mt-0.5">
-              Toca las cartas para voltearlas y encuentra todas las parejas iguales.
-            </p>
-          </div>
-        </div>
-
-        {/* Cards Grid */}
-        <div className={`grid gap-2.5 sm:gap-4 p-4 sm:p-6 bg-white rounded-3xl border border-stone-200 shadow-xs ${
+      {/* Cards Grid */}
+      <Card className="p-4 sm:p-6">
+        <div className={`grid gap-2.5 sm:gap-4 mx-auto ${
           cards.length <= 6
-            ? 'grid-cols-3 max-w-md mx-auto'
+            ? 'grid-cols-3 max-w-md'
             : cards.length <= 8
-            ? 'grid-cols-4 max-w-lg mx-auto'
-            : 'grid-cols-3 sm:grid-cols-4 max-w-xl mx-auto'
+            ? 'grid-cols-4 max-w-lg'
+            : 'grid-cols-3 sm:grid-cols-4 max-w-xl'
         }`}>
           {cards.map((card) => {
             const isFlipped = flippedUids.includes(card.uid);
@@ -168,41 +142,43 @@ export const ParejasGame: React.FC<ParejasGameProps> = ({
             return (
               <button
                 key={card.uid}
+                id={`parejas_card_${card.uid}`}
                 disabled={isMatched || isProcessing}
                 onClick={() => handleCardClick(card)}
-                className={`aspect-square rounded-2xl p-2 sm:p-3 transition-all transform flex flex-col items-center justify-center cursor-pointer select-none ${
+                aria-label={showFace ? `${card.label}` : 'Carta oculta, toca para voltear'}
+                className={`aspect-square rounded-3xl p-2 sm:p-3 transition-all flex flex-col items-center justify-center cursor-pointer select-none border-2 disabled:cursor-default ${
                   isMatched
-                    ? 'bg-emerald-50 border-2 border-emerald-500 opacity-95 scale-95 shadow-2xs'
+                    ? 'bg-emerald-400/15 border-emerald-300 scale-95 shadow-[0_0_16px_rgba(52,211,153,0.3)]'
                     : showFace
-                    ? 'bg-amber-50 border-2 border-amber-500 shadow-xs scale-100'
-                    : 'bg-stone-50 hover:bg-stone-100 border border-stone-200 shadow-2xs hover:border-stone-300 active:scale-95'
+                    ? `bg-gradient-to-br ${card.color} border-white/50 shadow-lg scale-100`
+                    : 'bg-white/[0.05] hover:bg-violet-400/15 border-white/15 hover:border-violet-300/60 active:scale-95'
                 }`}
               >
                 {showFace ? (
-                  <div className="flex flex-col items-center justify-center text-center">
-                    <span className="text-3xl sm:text-4xl md:text-5xl drop-shadow-2xs mb-0.5 sm:mb-1">
+                  <span className="flex flex-col items-center justify-center text-center anim-pop-in">
+                    <span className="text-3xl sm:text-4xl md:text-5xl drop-shadow mb-0.5 sm:mb-1" role="img" aria-label={card.label}>
                       {card.emoji}
                     </span>
-                    <span className="text-[11px] sm:text-xs font-black text-stone-800 tracking-tight leading-tight">
+                    <span className={`text-[11px] sm:text-xs font-black tracking-tight leading-tight ${isMatched ? 'text-emerald-200' : 'text-white'}`}>
                       {card.label}
                     </span>
                     {isMatched && (
-                      <span className="mt-0.5 text-[9px] sm:text-[10px] font-extrabold text-emerald-700 flex items-center gap-0.5">
+                      <span className="mt-0.5 text-[9px] sm:text-[10px] font-extrabold text-emerald-300 flex items-center gap-0.5">
                         <Sparkles className="w-2.5 h-2.5" /> ¡Par!
                       </span>
                     )}
-                  </div>
+                  </span>
                 ) : (
-                  <div className="flex flex-col items-center justify-center text-stone-400">
-                    <span className="text-xl sm:text-2xl md:text-3xl font-black">?</span>
-                    <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider opacity-60">Toca</span>
-                  </div>
+                  <span className="flex flex-col items-center justify-center text-slate-400">
+                    <Brain className="w-6 h-6 sm:w-8 sm:h-8 text-violet-300/70" />
+                    <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider opacity-60 mt-1">Toca</span>
+                  </span>
                 )}
               </button>
             );
           })}
         </div>
-      </div>
-    </div>
+      </Card>
+    </GameShell>
   );
 };
