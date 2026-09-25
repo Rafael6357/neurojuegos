@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { PATRONES_LEVELS, GAMES_META, getLevelCount } from '../../data/gamesData';
 import { Clock, Sparkles } from 'lucide-react';
 import { playClick, playCorrect, playError, playFlip } from '../../utils/sound';
+import { shuffleArray } from '../../utils/shuffle';
 import { GameShell } from '../ui/GameShell';
 import { Card } from '../ui/Card';
 import type { FeedbackState } from '../../types';
@@ -27,6 +28,8 @@ export const PatronesGame: React.FC<PatronesGameProps> = ({
   const [hiddenIndexes, setHiddenIndexes] = useState<number[]>([]);
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<FeedbackState | null>(null);
+  // Las opciones se mezclan en cada partida: la correcta no queda fija (antes opt2/opt2/...).
+  const [shuffledOptions] = useState(() => shuffleArray(levelData.options));
 
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
@@ -167,8 +170,8 @@ export const PatronesGame: React.FC<PatronesGameProps> = ({
             ¿Cuál fue el orden de desaparición?
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            {levelData.options.map((opt) => {
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {shuffledOptions.map((opt) => {
               const isSelected = selectedOptionId === opt.id;
 
               return (

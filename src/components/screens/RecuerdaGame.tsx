@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { RECUERDA_LEVELS, GAMES_META, getLevelCount } from '../../data/gamesData';
 import { Eye, HelpCircle } from 'lucide-react';
 import { playClick, playCorrect, playError, playFlip } from '../../utils/sound';
+import { shuffleArray } from '../../utils/shuffle';
 import { GameShell } from '../ui/GameShell';
 import { Card } from '../ui/Card';
 import type { FeedbackState } from '../../types';
@@ -24,6 +25,10 @@ export const RecuerdaGame: React.FC<RecuerdaGameProps> = ({
   const [secondsLeft, setSecondsLeft] = useState<number>(levelData.previewSeconds);
   const [revealedIndex, setRevealedIndex] = useState<number | null>(null);
   const [feedback, setFeedback] = useState<FeedbackState | null>(null);
+  // Las casillas se mezclan en cada partida: el objetivo ya no avanza 0→1→2→3 por nivel.
+  const [shuffledItems] = useState(() => shuffleArray(levelData.items));
+  const targetId = levelData.items[levelData.targetItemIndex].id;
+  const targetShuffledIndex = shuffledItems.findIndex(i => i.id === targetId);
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -70,7 +75,7 @@ export const RecuerdaGame: React.FC<RecuerdaGameProps> = ({
     playClick();
     setRevealedIndex(index);
 
-    if (index === levelData.targetItemIndex) {
+    if (index === targetShuffledIndex) {
       playCorrect();
       setPhase('completed');
       setFeedback({
@@ -126,7 +131,7 @@ export const RecuerdaGame: React.FC<RecuerdaGameProps> = ({
 
       {/* 2x2 Grid of Memory Cards */}
       <div className="grid grid-cols-2 gap-3 sm:gap-4 max-w-md mx-auto">
-        {levelData.items.map((item, index) => {
+        {shuffledItems.map((item, index) => {
           const isVisible = phase === 'preview' || phase === 'completed' || revealedIndex === index;
 
           return (

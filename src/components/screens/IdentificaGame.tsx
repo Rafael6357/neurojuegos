@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { IDENTIFICA_LEVELS, GAMES_META, getLevelCount } from '../../data/gamesData';
 import { CheckSquare, Square } from 'lucide-react';
 import { playClick, playCorrect, playError } from '../../utils/sound';
+import { shuffleArray } from '../../utils/shuffle';
 import { GameShell } from '../ui/GameShell';
 import type { FeedbackState } from '../../types';
 
@@ -22,6 +23,8 @@ export const IdentificaGame: React.FC<IdentificaGameProps> = ({
   // Track checked state for each of the 4 items
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
   const [feedback, setFeedback] = useState<FeedbackState | null>(null);
+  // Las tarjetas se mezclan en cada partida para variar la posición de cada objeto.
+  const [shuffledItems] = useState(() => shuffleArray(levelData.items));
 
   const toggleCheck = (itemId: string) => {
     playClick();
@@ -78,7 +81,7 @@ export const IdentificaGame: React.FC<IdentificaGameProps> = ({
     >
       {/* 4 Cards Grid */}
       <div className="grid grid-cols-2 gap-3 sm:gap-4">
-        {levelData.items.map((item) => {
+        {shuffledItems.map((item) => {
           const isChecked = !!checkedItems[item.id];
 
           return (

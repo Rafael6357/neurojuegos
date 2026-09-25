@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ORDENAR_LEVELS, OrdenaFraseLevel, GAMES_META, getLevelCount } from '../../data/gamesData';
 import { playClick, playCorrect, playError } from '../../utils/sound';
+import { shuffleArray } from '../../utils/shuffle';
 import { Sparkles, AlertCircle, Lightbulb, Check } from 'lucide-react';
 import { GameShell } from '../ui/GameShell';
 import { Card } from '../ui/Card';
@@ -37,9 +38,9 @@ export const OrdenaFraseGame: React.FC<OrdenaFraseGameProps> = ({
   const [feedback, setFeedback] = useState<FeedbackState | null>(null);
   const won = feedback?.kind === 'success';
 
-  // Setup words when level changes
+  // Setup words when level changes (mezcladas: el orden inicial varía en cada partida)
   useEffect(() => {
-    setAvailableWords(makePool(currentLevelData.scrambledWords));
+    setAvailableWords(shuffleArray(makePool(currentLevelData.scrambledWords)));
     setSelectedWords([]);
     setFeedback(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -63,7 +64,7 @@ export const OrdenaFraseGame: React.FC<OrdenaFraseGameProps> = ({
 
   const handleReset = () => {
     playClick();
-    setAvailableWords(makePool(currentLevelData.scrambledWords));
+    setAvailableWords(shuffleArray(makePool(currentLevelData.scrambledWords)));
     setSelectedWords([]);
     setFeedback(null);
   };

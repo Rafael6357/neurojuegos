@@ -1,5 +1,4 @@
 import { GameType, Player } from '../types';
-import { getLevelCount } from '../data/gamesData';
 
 const PLAYERS_KEY = 'neurojuegos_players_v1';
 const ACTIVE_PLAYER_KEY = 'neurojuegos_active_player_v1';
@@ -214,8 +213,9 @@ export const updatePlayerScoreAndLevel = (
 
   const scoreField = SCORE_FIELD[game];
   const levelField = LEVEL_FIELD[game];
-  // El desbloqueo nunca supera el contenido real del juego.
-  const nextLevel = Math.min(completedLevel + 1, getLevelCount(game));
+  // Sin tope: completar el último nivel deja desbloqueado = count+1,
+  // que significa "juego 100% terminado" (todos los nodos en check).
+  const nextLevel = completedLevel + 1;
 
   const nextPlayers = players.map(p => {
     if (p.id !== playerId) return p;

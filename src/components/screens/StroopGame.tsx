@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { STROOP_LEVELS, StroopLevel, GAMES_META, getLevelCount } from '../../data/gamesData';
 import { playClick, playCorrect, playError } from '../../utils/sound';
+import { shuffleArray } from '../../utils/shuffle';
 import { Sparkles, AlertCircle, Eye } from 'lucide-react';
 import { GameShell } from '../ui/GameShell';
 import { Card } from '../ui/Card';
@@ -48,6 +49,14 @@ export const StroopGame: React.FC<StroopGameProps> = ({
   const [feedback, setFeedback] = useState<FeedbackState | null>(null);
 
   const currentQ = currentLevelData.questions[questionIndex];
+
+  // Opciones mezcladas por pregunta: la tinta correcta no queda fija (casi siempre era la 2ª).
+  const [shuffledOptions, setShuffledOptions] = useState(() => shuffleArray(currentQ.options));
+
+  useEffect(() => {
+    setShuffledOptions(shuffleArray(currentLevelData.questions[questionIndex].options));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [questionIndex]);
 
   const handleSelectOption = (isCorrect: boolean, optionName: string) => {
     if (feedback !== null) return;
@@ -117,8 +126,8 @@ export const StroopGame: React.FC<StroopGameProps> = ({
           ¿De qué color es la tinta?
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3">
-          {currentQ.options.map((opt, i) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3">
+            {shuffledOptions.map((opt, i) => (
             <button
               key={i}
               id={`stroop_opt_${i}`}

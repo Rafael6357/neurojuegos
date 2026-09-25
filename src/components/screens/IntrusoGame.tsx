@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { INTRUSO_LEVELS, IntrusoLevel, GAMES_META, getLevelCount } from '../../data/gamesData';
 import { playCorrect, playError, playClick } from '../../utils/sound';
+import { shuffleArray } from '../../utils/shuffle';
 import { Sparkles, AlertCircle } from 'lucide-react';
 import { GameShell } from '../ui/GameShell';
 import type { FeedbackState } from '../../types';
@@ -22,6 +23,8 @@ export const IntrusoGame: React.FC<IntrusoGameProps> = ({
 
   const [feedback, setFeedback] = useState<FeedbackState | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  // Los candidatos se mezclan en cada partida: el intruso no queda fijo por posición.
+  const [shuffledItems] = useState(() => shuffleArray(currentLevelData.items));
   const locked = feedback?.kind === 'success';
 
   const handleItemClick = (item: { id: string; name: string; isIntruder: boolean }) => {
@@ -61,8 +64,8 @@ export const IntrusoGame: React.FC<IntrusoGameProps> = ({
       onBack={() => { playClick(); onReturnToLevels(); }}
     >
       {/* Items Grid */}
-      <div className="grid grid-cols-2 gap-3 sm:gap-4">
-        {currentLevelData.items.map((item) => {
+        <div className="grid grid-cols-2 gap-3 sm:gap-4">
+          {shuffledItems.map((item) => {
           const isSelected = selectedId === item.id;
 
           return (
